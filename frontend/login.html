@@ -1,317 +1,219 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NeuroVox Signup</title>
+  <title>NeuroVox Auth</title>
+
   <style>
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(to right, #2c5364, #203a43, #0f2027);
-      color: white;
       display: flex;
       justify-content: center;
-      align-items: flex-start;
+      align-items: center;
       min-height: 100vh;
-      padding: 20px;
-    }
-
-    h1 {
-      text-align: center;
       color: white;
-      font-family: 'Segoe UI', sans-serif;
-      margin-bottom: 20px;
-      width: 100%;
     }
 
     .container {
-      background-color: #1c1c1c;
+      background: #1c1c1c;
       padding: 30px;
       border-radius: 10px;
       width: 100%;
-      max-width: 500px;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.3);
-      text-align: center;
-      margin: auto;
+      max-width: 400px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
     }
 
-    .step { display: none; }
-    .step.active { display: block; }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
 
-    input, select, textarea, label {
+    input, select {
       width: 100%;
       padding: 12px;
       margin-bottom: 15px;
-      border: none;
       border-radius: 5px;
-      font-size: 16px;
-      box-sizing: border-box;
-      resize: vertical;
+      border: none;
+      font-size: 14px;
     }
 
-    input[type="submit"], button {
+    button {
+      width: 100%;
+      padding: 12px;
       background: linear-gradient(315deg, #00c6ff 0%, #0072ff 74%);
+      border: none;
+      border-radius: 5px;
       color: white;
       font-weight: bold;
       cursor: pointer;
-      border: none;
-      padding: 12px;
-      border-radius: 5px;
-      margin-top: 10px;
-      transition: background 0.3s ease;
-      width: 100%;
     }
 
-    input[type="submit"]:hover, button:hover {
-      background: linear-gradient(315deg, #0072ff 0%, #00c6ff 74%);
+    button:hover {
+      opacity: 0.9;
     }
 
-    .hidden { display: none; }
-    label { text-align: left; font-weight: bold; display: block; }
-    .required { color: #ff6b6b; }
-
-    /* ✅ Responsive Adjustments */
-    @media (max-width: 768px) {
-      body {
-        padding: 10px;
-        align-items: flex-start;
-      }
-      .container {
-        padding: 20px;
-        max-width: 90%;
-      }
-      h1 {
-        font-size: 22px;
-      }
-      input, select, textarea {
-        font-size: 14px;
-        padding: 10px;
-      }
-      input[type="submit"], button {
-        font-size: 14px;
-        padding: 10px;
-      }
+    .toggle {
+      text-align: center;
+      margin-top: 15px;
+      cursor: pointer;
+      color: #00c6ff;
     }
 
-    @media (max-width: 480px) {
-      h1 {
-        font-size: 20px;
-      }
-      .container {
-        padding: 15px;
-        border-radius: 8px;
-      }
-      input, select, textarea {
-        font-size: 13px;
-        padding: 8px;
-      }
-      input[type="submit"], button {
-        font-size: 13px;
-        padding: 8px;
-      }
+    .hidden {
+      display: none;
+    }
+
+    .message {
+      text-align: center;
+      margin-bottom: 10px;
+      font-size: 14px;
     }
   </style>
 </head>
+
 <body>
-  <div style="width:100%;">
-    <h1>NeuroVox User Signup and Verification</h1>
-    <div class="container">
 
-      <!-- Signup Step -->
-      <div id="signupStep" class="step active">
-        <h2>Signup</h2>
-        <form id="signupForm" novalidate>
-          <label for="role">Select Role <span class="required">*</span></label>
-          <select id="role" required>
-            <option value="">Select Role</option>
-            <option value="doctor">Doctor</option>
-            <option value="patient">Patient</option>
-          </select>
+<div class="container">
 
-          <input type="text" id="name" placeholder="Full Name" required>
-          <input type="email" id="email" placeholder="Email Address" required>
-          <input type="password" id="password" placeholder="Password" required minlength="6">
+  <!-- Message Area -->
+  <div id="message" class="message"></div>
 
-          <!-- Doctor Fields -->
-          <div id="doctorFields" class="hidden">
-            <input type="text" id="specialization" placeholder="Specialization">
-            <input type="text" id="license" placeholder="Medical License Number">
-            <input type="text" id="hospital" placeholder="Hospital/Clinic Name">
-          </div>
+  <!-- LOGIN FORM -->
+  <div id="loginForm">
+    <h2>Login</h2>
 
-          <!-- Patient Fields -->
-          <div id="patientFields" class="hidden">
-            <input type="number" id="age" placeholder="Age" min="0" max="120">
-            <select id="gender">
-              <option value="">Select Gender</option>
-              <option value="female">Female</option>
-              <option value="male">Male</option>
-              <option value="other">Other</option>
-            </select>
-            <input type="text" id="condition" placeholder="Medical Condition (if any)">
-          </div>
+    <input type="email" id="loginEmail" placeholder="Email" required>
+    <input type="password" id="loginPassword" placeholder="Password" required>
 
-          <input type="submit" value="Sign Up">
-        </form>
-      </div>
+    <button onclick="login()">Login</button>
 
-      <!-- Patient Details Step -->
-      <div id="patientDetailsStep" class="step">
-        <h2>Patient Medical Details</h2>
-        <form id="patientDetailsForm" novalidate>
-          <select id="paralysisType" required>
-            <option value="">Type of Paralysis</option>
-            <option value="hemiplegia">Hemiplegia</option>
-            <option value="paraplegia">Paraplegia</option>
-            <option value="quadriplegia">Quadriplegia</option>
-            <option value="monoplegia">Monoplegia</option>
-            <option value="diplegia">Diplegia</option>
-            <option value="none">None</option>
-          </select>
-          <textarea id="previousHistory" rows="3" placeholder="Previous Medical History"></textarea>
-          <textarea id="currentMedications" rows="3" placeholder="Current Medications"></textarea>
-          <textarea id="allergies" rows="2" placeholder="Allergies"></textarea>
-          <input type="tel" id="emergencyContact" placeholder="Emergency Contact (+123...)" required>
-          <input type="submit" value="Save Details">
-        </form>
-      </div>
-
-      <!-- Doctor Verification Step -->
-      <div id="doctorVerificationStep" class="step">
-        <h2>Doctor Verification</h2>
-        <form id="doctorVerificationForm" novalidate>
-          <input type="text" id="degree" placeholder="Medical Degree (e.g. MBBS, MD)" required>
-          <input type="number" id="yearsExperience" min="0" max="60" placeholder="Years of Experience" required>
-          
-          <label for="verificationDoc">
-            Upload Verification Document (License, Certificate) <span class="required">*</span>
-          </label>
-          <input type="file" id="verificationDoc" accept=".pdf,.jpg,.jpeg,.png" required>
-          
-          <input type="tel" id="contactNumber" placeholder="Contact Number (+123...)" required>
-          <input type="submit" value="Submit Verification">
-        </form>
-      </div>
-
-      <!-- User Dashboard Step -->
-      <div id="userDashboardStep" class="step">
-        <h2>Welcome to NeuroVox!</h2>
-        <p><strong>Name:</strong> <span id="dashName"></span></p>
-        <p><strong>Role:</strong> <span id="dashRole"></span></p>
-        <p><strong>User ID:</strong> <span id="dashUserId"></span></p>
-        <p><strong>Username:</strong> <span id="dashUsername"></span></p>
-        <button onclick="window.location.href='index.html'">Go to Home</button>
-      </div>
-
+    <div class="toggle" onclick="toggleForms()">
+      Don't have an account? Signup
     </div>
   </div>
 
-  <script>
-    let userRole = '';
-    let userEmail = '';
+  <!-- SIGNUP FORM -->
+  <div id="signupForm" class="hidden">
+    <h2>Signup</h2>
 
-    function showStep(stepId) {
-      document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
-      document.getElementById(stepId).classList.add('active');
+    <input type="text" id="signupName" placeholder="Full Name" required>
+    <input type="email" id="signupEmail" placeholder="Email" required>
+    <input type="password" id="signupPassword" placeholder="Password" required>
+
+    <select id="signupRole" required>
+      <option value="">Select Role</option>
+      <option value="doctor">Doctor</option>
+      <option value="patient">Patient</option>
+    </select>
+
+    <button onclick="signup()">Signup</button>
+
+    <div class="toggle" onclick="toggleForms()">
+      Already have an account? Login
+    </div>
+  </div>
+
+</div>
+
+<script>
+
+const BASE_URL = "http://127.0.0.1:8000";
+
+function showMessage(text, success=false) {
+  const msg = document.getElementById("message");
+  msg.style.color = success ? "lightgreen" : "salmon";
+  msg.innerText = text;
+}
+
+function toggleForms() {
+  document.getElementById("loginForm").classList.toggle("hidden");
+  document.getElementById("signupForm").classList.toggle("hidden");
+  showMessage("");
+}
+
+/* =======================
+   SIGNUP FUNCTION
+======================= */
+async function signup() {
+
+  const name = document.getElementById("signupName").value;
+  const email = document.getElementById("signupEmail").value;
+  const password = document.getElementById("signupPassword").value;
+  const role = document.getElementById("signupRole").value;
+
+  if (!name || !email || !password || !role) {
+    showMessage("All fields are required");
+    return;
+  }
+
+  try {
+    const response = await fetch(`${BASE_URL}/signup`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email, password, role })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      showMessage(data.detail || "Signup failed");
+      return;
     }
 
-    const roleSelect = document.getElementById("role");
-    const doctorFields = document.getElementById("doctorFields");
-    const patientFields = document.getElementById("patientFields");
+    showMessage("Signup successful! Please login.", true);
+    toggleForms();
 
-    roleSelect.addEventListener("change", () => {
-      doctorFields.classList.toggle("hidden", roleSelect.value !== "doctor");
-      patientFields.classList.toggle("hidden", roleSelect.value !== "patient");
+  } catch (error) {
+    showMessage("Backend not running?");
+  }
+}
+
+
+/* =======================
+   LOGIN FUNCTION
+======================= */
+async function login() {
+
+  const email = document.getElementById("loginEmail").value;
+  const password = document.getElementById("loginPassword").value;
+
+  if (!email || !password) {
+    showMessage("Enter email and password");
+    return;
+  }
+
+  try {
+    const response = await fetch(`${BASE_URL}/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password })
     });
 
-    document.getElementById("signupForm").addEventListener("submit", function(e){
-      e.preventDefault();
-      userRole = roleSelect.value;
-      userEmail = document.getElementById("email").value.trim().toLowerCase();
-      const fullName = document.getElementById("name").value.trim();
-      const password = document.getElementById("password").value;
+    const data = await response.json();
 
-      if(localStorage.getItem("user_" + userEmail)){
-        alert("User already exists! Please login.");
-        return;
-      }
-
-      let extra = {};
-      if(userRole==="doctor"){
-        extra = {
-          specialization: document.getElementById("specialization").value,
-          license: document.getElementById("license").value,
-          hospital: document.getElementById("hospital").value
-        };
-        showStep("doctorVerificationStep");
-      } else {
-        extra = {
-          age: document.getElementById("age").value,
-          gender: document.getElementById("gender").value,
-          condition: document.getElementById("condition").value
-        };
-        showStep("patientDetailsStep");
-      }
-
-      localStorage.setItem("temp_user", JSON.stringify({
-        role: userRole,
-        name: fullName,
-        email: userEmail,
-        password,
-        ...extra
-      }));
-    });
-
-    document.getElementById("patientDetailsForm").addEventListener("submit", function(e){
-      e.preventDefault();
-      const temp = JSON.parse(localStorage.getItem("temp_user"));
-      const data = {
-        paralysisType: document.getElementById("paralysisType").value,
-        previousHistory: document.getElementById("previousHistory").value,
-        currentMedications: document.getElementById("currentMedications").value,
-        allergies: document.getElementById("allergies").value,
-        emergencyContact: document.getElementById("emergencyContact").value
-      };
-      temp.medicalDetails = data;
-      finalizeUser(temp);
-    });
-
-    document.getElementById("doctorVerificationForm").addEventListener("submit", function(e){
-      e.preventDefault();
-      const temp = JSON.parse(localStorage.getItem("temp_user"));
-      const file = document.getElementById("verificationDoc").files[0];
-      const reader = new FileReader();
-      reader.onload = function(){
-        temp.verificationDetails = {
-          degree: document.getElementById("degree").value,
-          yearsExperience: document.getElementById("yearsExperience").value,
-          contactNumber: document.getElementById("contactNumber").value,
-          documentName: file.name,
-          documentData: reader.result
-        };
-        finalizeUser(temp);
-      };
-      reader.readAsDataURL(file);
-    });
-
-    function finalizeUser(userData){
-      const userId = "USR-" + Date.now();
-      const username = userData.name.split(" ")[0].toLowerCase() + Math.floor(Math.random()*1000);
-
-      userData.userId = userId;
-      userData.username = username;
-
-      localStorage.setItem("user_" + userEmail, JSON.stringify(userData));
-      localStorage.removeItem("temp_user");
-
-      document.getElementById("dashName").textContent = userData.name;
-      document.getElementById("dashRole").textContent = userData.role;
-      document.getElementById("dashUserId").textContent = userId;
-      document.getElementById("dashUsername").textContent = username;
-      showStep("userDashboardStep");
+    if (!response.ok) {
+      showMessage(data.detail || "Login failed");
+      return;
     }
-  </script>
+
+    showMessage("Login successful!", true);
+
+    // Redirect to home
+    localStorage.setItem("neurovox_user", JSON.stringify(data.user));
+
+    setTimeout(() => {
+      window.location.href = "index.html";
+    }, 800);
+
+  } catch (error) {
+    showMessage("Backend not running?");
+  }
+}
+
+</script>
+
 </body>
 </html>
