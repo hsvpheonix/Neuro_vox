@@ -1,0 +1,378 @@
+
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NeuroVox - Silence into Hope</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css">
+  <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="script.js"></script>
+</head>
+<body>
+
+  <!-- Signup Success Overlay -->
+  <div id="signupSuccessOverlay" aria-hidden="true" role="alert" aria-live="assertive" aria-atomic="true" class="fixed inset-0 bg-gray-900 bg-opacity-90 backdrop-blur-md flex flex-col justify-center items-center z-50 opacity-0 pointer-events-none transition-opacity duration-500">
+    <img src="neuro.jpg" alt="NeuroVox Logo" class="w-32 h-32 mb-6 filter drop-shadow-lg" />
+    <p class="text-indigo-300 text-xl font-semibold text-center">Welcome to NeuroVox.</p>
+    <button id="goHomeBtn" class="mt-6 px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-md transition">Go to Home</button>
+  </div>
+
+  <!-- Navbar -->
+  <nav class="fixed top-0 left-0 right-0 bg-gray-900 bg-opacity-90 backdrop-blur-md shadow-md z-50">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <a href="#" class="flex items-center text-indigo-400 font-bold text-xl select-none space-x-2">
+        <img src="neuro.jpg" alt="NeuroVox Icon" class="w-8 h-8 rounded-full shadow-lg" />
+        <span>NeuroVox</span>
+      </a>
+      <ul class="hidden md:flex space-x-8 text-gray-300 font-semibold">
+        <li><a href="#home" class="hover:text-indigo-400 transition">Home</a></li>
+        <li><a href="#about" class="hover:text-indigo-400 transition">About</a></li>
+        <li><a href="#pricing" class="hover:text-indigo-400 transition">Pricing</a></li>
+        <li><a href="#team-members" class="hover:text-indigo-400 transition">Team</a></li>
+        <li><a href="#mission-vision" class="hover:text-indigo-400 transition">Mission and Vision</a></li>
+        <li><a href="#neurovox-features" class="hover:text-indigo-400 transition">Features</a></li>
+      </ul>
+      <a href="login.html" class="hidden md:inline-block px-4 py-2 border border-indigo-400 rounded-md text-indigo-400 font-semibold hover:bg-indigo-400 hover:text-gray-900 transition">Login</a>
+      <button id="mobile-menu-button" class="md:hidden text-indigo-400 focus:outline-none">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 8h16M4 16h16" />
+        </svg>
+      </button>
+    </div>
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden bg-gray-900 bg-opacity-95">
+      <ul class="flex flex-col space-y-2 px-6 py-4 text-gray-300 font-semibold">
+        <li><a href="#home" class="block hover:text-indigo-400 transition">Home</a></li>
+        <li><a href="#about" class="block hover:text-indigo-400 transition">About</a></li>
+        <li><a href="#pricing" class="block hover:text-indigo-400 transition">Pricing</a></li>
+        <li><a href="#team-members" class="block hover:text-indigo-400 transition">Team</a></li>
+        <li><a href="#mission-vision" class="block hover:text-indigo-400 transition">Mission and Vision</a></li>
+        <li><a href="#neurovox-features" class="block hover:text-indigo-400 transition">Features</a></li>
+        <li><a href="login.html" class="block border border-indigo-400 rounded-md px-4 py-2 text-indigo-400 font-semibold hover:bg-indigo-400 hover:text-gray-900 transition">Login</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section id="home" class="relative pt-24 md:pt-32 max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center gap-12 min-h-[600px]">
+    <div class="flex-1 max-w-xl text-left space-y-6">
+      <h1 class="text-4xl md:text-5xl font-extrabold leading-tight">
+        NeuroVox: <br />
+        <span class="text-indigo-400">Transforming Silence</span> <br />
+        Into <span class="text-indigo-400">Hope</span>
+      </h1>
+      <p class="text-gray-300 text-lg leading-relaxed">
+        NeuroVox is a full-stack web application designed to help individuals with speech impairments communicate naturally and securely using a non-invasive brain-signal translation headband. It combines real-time brain state monitoring, emergency response, assistive technologies, and emotional expression—all wrapped in a sleek, accessible interface.
+      </p>
+      <div class="flex items-center space-x-6 mt-6">
+      <a href="#services" id="getStartedBtn" class="inline-block bg-indigo-500 hover:bg-indigo-600 text-white font-semibold px-6 py-3 rounded-lg shadow-lg transition">
+        Get Started
+      </a>
+      <div id="watchVideoBtn" onclick="openVideoModal()" class="video-box bg-indigo-500 hover:bg-indigo-600 text-white font-semibold px-6 py-3 rounded-lg shadow-lg transition cursor-pointer">
+        Watch Video
+      </div>
+      </div>
+    </div>
+
+      <div class="flex-1 relative max-w-lg w-full">
+        <img src="neuro.jpg" alt="NeuroVox Logo" class="rounded-xl shadow-2xl glow-effect" />
+        <!-- Floating Info Boxes moved below image in a horizontal line -->
+        <div class="flex justify-between mt-6 space-x-4 max-w-lg mx-auto">
+          <div class="floating-box flex-1 text-center">
+            <strong>Real-time Monitoring</strong>
+            Brain state & emotional tracking
+          </div>
+          <div class="floating-box flex-1 text-center">
+            <strong>Emergency Alerts</strong>
+            Instant SOS & assistive controls
+          </div>
+          <div class="floating-box flex-1 text-center">
+            <strong>Secure Access</strong>
+            Doctors, caregivers & patients
+          </div>
+        </div>
+      </div>
+  </section>
+  <!-- Chatbot Button Section -->
+  <section id="chatbot-button" class="flex justify-center items-center py-16">
+    <button id="openChatbotBtn" aria-label="Open Brainy Chatbot" class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-4 px-8 rounded-lg text-3xl flex items-center space-x-3 shadow-lg transition glow-effect">
+      <span>🧠</span>
+      <a href="chatbot.html" class="mt-auto bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded-md transition inline-block">Chatbot</a>
+    </button>
+  </section>
+
+  <!-- Core Goals Section -->
+  <section id="core-goals" class="max-w-7xl mx-auto px-6 py-16">
+    <h2 class="text-3xl font-bold text-indigo-400 mb-8 text-center flex items-center justify-center gap-2">
+      <span>🎯</span> Core Goals
+    </h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+      <div class="goal-card bg-gray-800 rounded-lg p-6 shadow-lg text-gray-300">
+        <h3 class="font-semibold mb-2">Translate brain signals</h3>
+        <p>Convert brain signals into human-like speech and text.</p>
+      </div>
+      <div class="goal-card bg-gray-800 rounded-lg p-6 shadow-lg text-gray-300">
+        <h3 class="font-semibold mb-2">Real-time tracking</h3>
+        <p>Monitor emotional and cognitive states live.</p>
+      </div>
+      <div class="goal-card bg-gray-800 rounded-lg p-6 shadow-lg text-gray-300">
+        <h3 class="font-semibold mb-2">Emergency & assistive controls</h3>
+        <p>Enable alerts and controls for users with limited mobility.</p>
+      </div>
+      <div class="goal-card bg-gray-800 rounded-lg p-6 shadow-lg text-gray-300">
+        <h3 class="font-semibold mb-2">Secure access</h3>
+        <p>Provide secure access for doctors, caregivers, and patients.</p>
+      </div>
+      <div class="goal-card bg-gray-800 rounded-lg p-6 shadow-lg text-gray-300">
+        <h3 class="font-semibold mb-2">Scalable platform</h3>
+        <p>Build a production-ready platform for deployment.</p>
+      </div>
+      <div class="goal-card bg-gray-800 rounded-lg p-6 shadow-lg text-gray-300">
+        <h3 class="font-semibold mb-2">Emotional expression</h3>
+        <p>Facilitate natural emotional communication through brain signals.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section id="neurovox-features" class="max-w-7xl mx-auto px-6 py-16">
+    <h2 class="text-3xl font-bold text-indigo-400 mb-8 text-center">
+      NeuroVox – Giving Voice to Your Thoughts
+    </h2>
+    <div class="overflow-x-auto scrollbar-thin scrollbar-thumb-indigo-600 scrollbar-track-indigo-900">
+      <div class="flex space-x-6 min-w-max">
+        <div class="feature-card bg-gray-800 rounded-lg p-6 w-64 flex-shrink-0 shadow-lg flex flex-col items-center text-center">
+          <div class="text-4xl mb-3">🧠</div>
+          <h3 class="font-semibold mb-2">Brain Signal Translation</h3>
+          <p>Convert thoughts into speech and text.</p>
+          <a href="brain.html" class="mt-auto bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded-md transition inline-block">Explore Feature</a>
+        </div>
+        <div class="feature-card bg-gray-800 rounded-lg p-6 w-64 flex-shrink-0 shadow-lg flex flex-col items-center text-center">
+          <div class="text-4xl mb-3">📊</div>
+          <h3 class="font-semibold mb-2">Signal-to-Speech</h3>
+          <p>Track brain states and emotions live.</p>
+          <a href="signaltospeech.html" class="mt-auto bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded-md transition inline-block">Explore Feature</a>
+        </div>
+        <div class="feature-card bg-gray-800 rounded-lg p-6 w-64 flex-shrink-0 shadow-lg flex flex-col items-center text-center">
+          <div class="text-4xl mb-3">🚨</div>
+          <h3 class="font-semibold mb-2">Emergency Alerts</h3>
+          <p>Instant SOS and assistive controls.</p>
+          <a href="emergency.html" class="mt-auto bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded-md transition inline-block">Explore Feature</a>
+        </div>
+        <div class="feature-card bg-gray-800 rounded-lg p-6 w-64 flex-shrink-0 shadow-lg flex flex-col items-center text-center">
+          <div class="text-4xl mb-3">🔒</div>
+          <h3 class="font-semibold mb-2">Support Resources</h3>
+          <p>Provide the resources for support.</p>
+          <a href="resources.html" class="mt-auto bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded-md transition inline-block">Explore Feature</a>
+        </div>
+        <div class="feature-card bg-gray-800 rounded-lg p-6 w-64 flex-shrink-0 shadow-lg flex flex-col items-center text-center">
+          <div class="text-4xl mb-3">📊</div>
+          <h3 class="font-semibold mb-2">Live Dashboard</h3>
+          <p>Real-time visualization, logs, and status indicators.</p>
+         <a href="livedashboard.html" class="mt-auto bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded-md transition inline-block">Explore Feature</a>
+        </div>
+        <div class="feature-card bg-gray-800 rounded-lg p-6 w-64 flex-shrink-0 shadow-lg flex flex-col items-center text-center">
+          <div class="text-4xl mb-3">👤</div>
+          <h3 class="font-semibold mb-2">Doctor Portal</h3>
+          <p>Secure profiles, progress tracking, annotations.</p>
+          <a href="doctorportal.html" class="mt-auto bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded-md transition inline-block">Explore Feature</a>
+        </div>
+        <div class="feature-card bg-gray-800 rounded-lg p-6 w-64 flex-shrink-0 shadow-lg flex flex-col items-center text-center">
+          <div class="text-4xl mb-3">📄</div>
+          <h3 class="font-semibold mb-2">Health Reports</h3>
+          <p>Automated summaries, charts, downloadable PDFs.</p>
+         <a href="healthreport_explore.html" class="mt-auto bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded-md transition inline-block">Explore Feature</a>
+        </div>
+        <div class="feature-card bg-gray-800 rounded-lg p-6 w-64 flex-shrink-0 shadow-lg flex flex-col items-center text-center">
+          <div class="text-4xl mb-3">📝</div>
+          <h3 class="font-semibold mb-2">Mind Log</h3>
+          <p>Daily entries, journaling, sentiment tracking.</p>
+         <a href="avatar.html" class="mt-auto bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded-md transition inline-block">Explore Feature</a>
+        </div>
+        <div class="feature-card bg-gray-800 rounded-lg p-6 w-64 flex-shrink-0 shadow-lg flex flex-col items-center text-center">
+          <div class="text-4xl mb-3">🏥</div>
+          <h3 class="font-semibold mb-2">Hospital Locator & Appointment Booking</h3>
+          <p>Find hospitals and book appointments easily.</p>
+          <a href="appointment_booking.html" class="mt-auto bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded-md transition inline-block">Explore Feature</a>
+        </div>
+        <div class="feature-card bg-gray-800 rounded-lg p-6 w-64 flex-shrink-0 shadow-lg flex flex-col items-center text-center">
+          <div class="text-4xl mb-3">🧑‍⚕️</div>
+          <h3 class="font-semibold mb-2">Therapy Sessions</h3>
+          <p>Interactive therapy sessions with video and voice support.</p>
+         <a href="therapy.html" class="mt-auto bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded-md transition inline-block">Explore Feature</a>
+        </div>
+        <div class="feature-card bg-gray-800 rounded-lg p-6 w-64 flex-shrink-0 shadow-lg flex flex-col items-center text-center">
+          <div class="text-4xl mb-3">🛠️</div>
+          <h3 class="font-semibold mb-2">Technician Support</h3>
+          <p>Fix all headset issues with expert technician assistance.</p>
+          <a href="technician.html" class="mt-auto bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded-md transition inline-block">Explore Feature</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Video Modal -->
+  <div id="videoModal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-md flex items-center justify-center z-50 hidden">
+    <div class="relative bg-white p-4 rounded-lg max-w-4xl w-full mx-4">
+      <button onclick="closeVideoModal()" class="absolute top-2 right-2 text-gray-600 hover:text-gray-800 text-2xl font-bold">&times;</button>
+      <video controls class="w-full rounded-lg">
+        <source src="WhatsApp Video 2025-09-12 at 23.46.05.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Add glow effect on click or touch for all boxes
+      function addGlowEffect(event) {
+        const target = event.currentTarget;
+        target.classList.add('glow-effect');
+        setTimeout(() => {
+          target.classList.remove('glow-effect');
+        }, 1000); // Glow effect lasts 1 second
+      }
+
+      document.querySelectorAll('.floating-box, .goal-card, .feature-card, .video-box, .mission-card').forEach(box => {
+        box.addEventListener('click', addGlowEffect);
+        box.addEventListener('touchstart', addGlowEffect);
+      });
+
+      // Video modal open and close functions
+      window.openVideoModal = function() {
+        document.getElementById('videoModal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden'; // Prevent background scrolling
+      };
+
+      window.closeVideoModal = function() {
+        document.getElementById('videoModal').classList.add('hidden');
+        document.body.style.overflow = 'auto'; // Restore scrolling
+      };
+
+      // Add glow effect to Watch Video button when Get Started is clicked
+      document.getElementById('getStartedBtn').addEventListener('click', (event) => {
+        event.preventDefault(); // Prevent default anchor navigation
+        const watchBtn = document.getElementById('watchVideoBtn');
+        watchBtn.classList.add('glow-effect');
+        setTimeout(() => {
+          watchBtn.classList.remove('glow-effect');
+        }, 1000); // Glow effect lasts 1 second
+      });
+    });
+  </script>
+  <!-- About Section -->
+  <section id="about" class="max-w-7xl mx-auto px-6 py-16">
+    <h2 class="text-3xl font-bold text-indigo-400 mb-8 text-center">About NeuroVox</h2>
+    <div class="glow-effect bg-gray-800 rounded-lg p-6 max-w-4xl mx-auto flex flex-col md:flex-row items-center gap-6 shadow-lg">
+      <img src="brain.jpg" alt="NeuroVox Brain and Code" class="rounded-lg w-full md:w-48 object-cover shadow-lg" />
+      <p class="text-gray-300 text-lg leading-relaxed md:flex-1">
+        NeuroVox is a full-stack web application designed to help individuals with speech impairments communicate naturally and securely using a non-invasive brain-signal translation headband. It combines real-time brain state monitoring, emergency response, assistive technologies, and emotional expression—all wrapped in a sleek, accessible interface.
+      </p>
+    </div>
+  </section>
+
+  <!-- Pricing Section -->
+  <section id="pricing" class="max-w-7xl mx-auto px-6 py-16">
+    <h2 class="text-3xl font-bold text-indigo-400 mb-8 text-center">Pricing Plans</h2>
+    <div class="flex flex-col md:flex-row justify-center gap-6 max-w-4xl mx-auto">
+      <div class="bg-white rounded-lg p-6 shadow-lg text-gray-900 flex-1 max-w-xs mx-auto md:mx-0 glow-effect">
+        <h3 class="font-semibold mb-2 text-center">Basic</h3>
+        <p class="text-indigo-600 text-xl font-semibold mb-4 text-center">₹150<span class="text-gray-500 font-normal">/month</span></p>
+        <ul class="mb-6 list-disc list-inside space-y-1 text-sm">
+          <li>Basic brain monitoring</li>
+          <li>Signal-to-speech translation</li>
+          <li>Emergency alerts</li>
+          <li>Email support</li>
+          <li>Access to community forums</li>
+        </ul>
+        <button class="bg-indigo-600 text-white font-semibold px-4 py-2 rounded-md w-full hover:bg-indigo-700 transition">Choose Basic</button>
+      </div>
+      <div class="bg-white rounded-lg p-6 shadow-lg text-gray-900 flex-1 max-w-xs mx-auto md:mx-0 glow-effect">
+        <h3 class="font-semibold mb-2 text-center">Premium</h3>
+        <p class="text-indigo-600 text-xl font-semibold mb-4 text-center">₹250<span class="text-gray-500 font-normal">/month</span></p>
+        <ul class="mb-6 list-disc list-inside space-y-1 text-sm">
+          <li>Advanced brain monitoring</li>
+          <li>Real-time dashboard</li>
+          <li>Doctor portal access</li>
+          <li>Health reports</li>
+          <li>Priority support</li>
+        </ul>
+        <button class="bg-indigo-600 text-white font-semibold px-4 py-2 rounded-md w-full hover:bg-indigo-700 transition">Choose Premium</button>
+      </div>
+      <div class="bg-white rounded-lg p-6 shadow-lg text-gray-900 flex-1 max-w-xs mx-auto md:mx-0 glow-effect">
+        <h3 class="font-semibold mb-2 text-center">Pro</h3>
+        <p class="text-indigo-600 text-xl font-semibold mb-4 text-center">₹350<span class="text-gray-500 font-normal">/month</span></p>
+        <ul class="mb-6 list-disc list-inside space-y-1 text-sm">
+          <li>All Premium features</li>
+          <li>Mind log journaling</li>
+          <li>Custom integrations</li>
+          <li>24/7 phone support</li>
+          <li>Personalized training</li>
+        </ul>
+        <button class="bg-indigo-600 text-white font-semibold px-4 py-2 rounded-md w-full hover:bg-indigo-700 transition">Choose Pro</button>
+      </div>
+    </div>
+  </section>
+  <!-- Mission & Vision Section -->
+  <section id="mission-vision" class="max-w-7xl mx-auto px-6 py-16">
+    <h2 class="text-3xl font-bold text-indigo-400 mb-8 text-center">Mission & Vision</h2>
+    <div class="mission-card bg-gray-800 rounded-lg p-6 max-w-4xl mx-auto flex items-center gap-6 shadow-lg">
+      <img src="image.png" alt="NeuroVox Brain and Code" class="rounded-lg w-48 object-cover shadow-lg" />
+      <p class="text-gray-300 text-lg leading-relaxed">
+        Our mission is to empower individuals with speech impairments by transforming silence into hope through innovative neurotechnology. We envision a world where communication barriers are eliminated, enabling everyone to express themselves freely and securely.
+      </p>
+    </div>
+  </section>
+
+  <!-- Team Members Box Section -->
+  <section id="team-members" class="max-w-7xl mx-auto px-6 py-16">
+    <h2 class="text-3xl font-bold text-indigo-400 mb-8 text-center">Team Vianra</h2>
+    <div class="bg-gray-800 rounded-lg p-6 max-w-4xl mx-auto flex justify-center gap-6 shadow-lg glow-effect">
+      <div class="bg-white rounded-lg p-6 w-64 flex-shrink-0 shadow-lg flex flex-col items-center text-center text-black glow-effect">
+        <div class="mb-3 w-16 h-16 rounded-full border border-indigo-300 flex items-center justify-center glow-effect">
+          <img src="SHWETA3.png" alt="Harsita Singh" class="w-10 h-10" />
+        </div>
+        <h3 class="font-semibold mb-1">Harsita Singh</h3>
+        <p class="text-sm font-semibold mb-1">Lead Developer & Chief Architect</p>
+        <p class="text-xs">Driving the technical vision and development of NeuroVox.</p>
+      </div>
+      <div class="bg-white rounded-lg p-6 w-64 flex-shrink-0 shadow-lg flex flex-col items-center text-center text-black glow-effect">
+        <div class="mb-3 w-16 h-16 rounded-full border border-indigo-300 flex items-center justify-center glow-effect">
+          <img src="SHWETA3.png" alt="Shweta Prajapati" class="w-10 h-10" />
+        </div>
+        <h3 class="font-semibold mb-1">Shweta Prajapati</h3>
+        <p class="text-sm font-semibold mb-1">Research Lead & NeuroTech Strategist</p>
+        <p class="text-xs">Leading research and strategy in neurotechnology applications.</p>
+      </div>
+      <div class="bg-white rounded-lg p-6 w-64 flex-shrink-0 shadow-lg flex flex-col items-center text-center text-black glow-effect">
+        <div class="mb-3 w-16 h-16 rounded-full border border-indigo-300 flex items-center justify-center glow-effect">
+          <img src="SHWETA3.png" alt="Khushi Kushwaha" class="w-10 h-10" />
+        </div>
+        <h3 class="font-semibold mb-1">Khushi Kushwaha</h3>
+        <p class="text-sm font-semibold mb-1">Presentation Designer & Outreach Coordinator</p>
+        <p class="text-xs">Designing presentations and coordinating outreach efforts.</p>
+      </div>
+      <div class="bg-white rounded-lg p-6 w-64 flex-shrink-0 shadow-lg flex flex-col items-center text-center text-black glow-effect">
+        <div class="mb-3 w-16 h-16 rounded-full border border-indigo-300 flex items-center justify-center glow-effect">
+          <img src="ladka.jpg" alt="Astitva Goswami" class="w-10 h-10" />
+        </div>
+        <h3 class="font-semibold mb-1">Astitva Goswami</h3>
+        <p class="text-sm font-semibold mb-1">Business Strategy & Market Intelligence</p>
+        <p class="text-xs">Analyzing market trends and opportunities for NeuroVox.</p>
+      </div>
+    </div>
+  </section>
+  <section id="quote" class="max-w-7xl mx-auto px-6 py-8">
+    <div class="bg-gray-800 rounded-lg p-6 max-w-4xl mx-auto text-center text-indigo-300 italic shadow-lg glow-effect">
+      <p>🧠 <em>Built with empathy, innovation, and purpose. NeuroVox — Silence into Hope.</em></p>
+    </div>
+  </section>
+  <footer class="max-w-7xl mx-auto px-6 py-4 text-center text-gray-400 text-sm">
+    <p>© 2026 Team VIANRA. Built with empathy, innovation, and purpose.</p>
+  </footer>
+</body>
+</html>
