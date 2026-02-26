@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Support Resources in India - NeuroVox</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <style>
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 1rem;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .search-box input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: 0.375rem;
+            border: none;
+            background-color: #1f2937;
+            color: #e0e0e0;
+            font-size: 1rem;
+        }
+        .section-title {
+            font-weight: 700;
+            font-size: 1.25rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+        .card {
+            background-color: #1f2937;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+        }
+        .card-icon {
+            background-color: #2563eb;
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 0.375rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+        .card-title {
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+        .card-description {
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+            color: #cbd5e1;
+        }
+        .card-contact {
+            font-size: 0.75rem;
+            margin-bottom: 0.25rem;
+        }
+        .card-contact strong {
+            font-weight: 600;
+        }
+        .card-link a {
+            font-size: 0.75rem;
+            color: #3b82f6;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="text-3xl font-bold text-white">Support Resources in India</h1>
+            <p class="text-gray-400 mt-2">Find NGOs and government-aided sites offering support for speech impairments and neurological conditions across India.</p>
+        </div>
+
+        <button class="back-btn" onclick="window.location.href='index.html'">← Go to Home</button>
+        <div class="flex items-start mb-6">
+            <div class="flex-grow">
+                <input type="text" placeholder="Search for NGOs or Government Sites" list="suggestions" class="w-full bg-black text-white" />
+                <datalist id="suggestions">
+                    <option value="Speech Therapy India" />
+                    <option value="Neuro Support India" />
+                    <option value="Aphasia Foundation" />
+                    <option value="National Rehabilitation Center" />
+                    <option value="Health Support Scheme" />
+                </datalist>
+            </div>
+        </div>
+
+        <div>
+            <h2 class="section-title text-white">NGOs</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <div class="card-icon" aria-label="Speech Therapy Icon">🗣️</div>
+                    <div class="card-title">Speech Therapy India</div>
+                    <div class="card-description">Provides comprehensive speech therapy and support services for individuals with speech impairments.</div>
+                    <div class="card-contact"><strong>Contact:</strong> +91-9876543210</div>
+                    <div class="card-link"><a href="https://speechtherapyindia.org" target="_blank" rel="noopener noreferrer">speechtherapyindia.org</a></div>
+                </div>
+                <div class="card">
+                    <div class="card-icon" aria-label="Neuro Support Icon">🧠</div>
+                    <div class="card-title">Neuro Support India</div>
+                    <div class="card-description">Offers counseling, therapy, and support groups for patients with neurological disorders.</div>
+                    <div class="card-contact"><strong>Contact:</strong> +91-8765432109</div>
+                    <div class="card-link"><a href="https://neurosupport.in" target="_blank" rel="noopener noreferrer">neurosupport.in</a></div>
+                </div>
+                <div class="card">
+                    <div class="card-icon" aria-label="Aphasia Foundation Icon">🗨️</div>
+                    <div class="card-title">Aphasia Foundation</div>
+                    <div class="card-description">Dedicated to improving the lives of individuals with aphasia through therapy and community support.</div>
+                    <div class="card-contact"><strong>Contact:</strong> +91-7654321098</div>
+                    <div class="card-link"><a href="https://aphasiafoundation.org" target="_blank" rel="noopener noreferrer">aphasiafoundation.org</a></div>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <h2 class="section-title text-white">Government-Aided Sites</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <div class="card-icon" aria-label="Rehabilitation Center Icon">🏥</div>
+                    <div class="card-title">National Rehabilitation Center</div>
+                    <div class="card-description">Government initiative providing rehabilitation services for individuals with disabilities.</div>
+                    <div class="card-contact"><strong>Contact:</strong> +91-6543210987</div>
+                    <div class="card-link"><a href="https://disabilityrehab.gov.in" target="_blank" rel="noopener noreferrer">disabilityrehab.gov.in</a></div>
+                </div>
+                <div class="card">
+                    <div class="card-icon" aria-label="Health Support Scheme Icon">💊</div>
+                    <div class="card-title">Health Support Scheme</div>
+                    <div class="card-description">Offers financial assistance and support for medical treatments related to neurological conditions.</div>
+                    <div class="card-contact"><strong>Contact:</strong> +91-5432109876</div>
+                    <div class="card-link"><a href="https://healthsupport.gov.in" target="_blank" rel="noopener noreferrer">healthsupport.gov.in</a></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

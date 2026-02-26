@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+<link as="style" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Inter%3Awght%40400%3B500%3B600%3B700%3B900&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900" onload="this.rel='stylesheet'" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<title>NeuroVox - Mind Log</title>
+<link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style type="text/tailwindcss">
+      :root {
+        --primary-color: #137fec;
+      }
+      .material-symbols-outlined {
+        font-variation-settings:
+        'FILL' 0,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 24
+      }
+    </style>
+</head>
+<body class="bg-[#111418] text-white">
+<div class="flex min-h-screen flex-col" style='font-family: Inter, "Noto Sans", sans-serif;'>
+<header class="sticky top-0 z-10 flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#283039] bg-[#111418]/80 px-10 py-4 backdrop-blur-sm">
+<div class="flex items-center gap-4">
+<div class="text-[var(--primary-color)]">
+<svg class="h-8 w-8" fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path d="M44 4H30.6666V17.3334H17.3334V30.6666H4V44H44V4Z" fill="currentColor"></path></svg>
+</div>
+<h1 class="text-xl font-bold tracking-tighter">NeuroVox</h1>
+</div>
+<nav class="flex items-center gap-6 text-sm font-medium text-gray-300">
+<a class="text-white ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2" href="#">Dashboard</a>
+<a class="text-[var(--primary-color)]" href="#">Mind Log</a>
+<a class="hover:text-white" href="#">Analytics</a>
+<a class="hover:text-white" href="#">Settings</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-transparent text-gray-400 transition-colors hover:bg-[#283039] hover:text-white">
+<span class="material-symbols-outlined">help</span>
+</button>
+<button class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-transparent text-gray-400 transition-colors hover:bg-[#283039] hover:text-white">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="h-10 w-10 rounded-full bg-cover bg-center bg-no-repeat" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBWsKwVrhVTBuZ3fWa2HIDmjeg7gIB3HzcwQ1vZAPgewOhCd7vUCxtEHbzxGI8ZVxS8MVOr407i6BvHRLaXIbJ_RSZ1zoeynLG5Y_wtGHvfzevI53pme4fdrtdrKJUkNR3rVz256wc-_F1nK5u1dF_5hjwd0xCCEw_gv5hRHyLdHi3OpjS8Uv2gwPgnrn0fMB2uZ4rIzPNjbbTmw5ttSrl2NydnGazbTNgmsOgjYdPMj0oIBYxA3QH-xZQH9iDkk4MSyxAlYppqwpnA");'></div>
+</div>
+</header>
+<main class="flex flex-1 justify-center px-4 py-10 sm:px-6 lg:px-8">
+<div class="w-full max-w-4xl">
+<div class="mb-8 flex flex-wrap items-start justify-between gap-6">
+<div class="flex flex-col gap-2">
+<h2 class="text-4xl font-bold tracking-tight">Mind Log</h2>
+<p class="text-gray-400">
+                A chronological record of your translated thoughts.
+              </p>
+</div>
+<div class="flex gap-2">
+<button class="inline-flex h-10 items-center justify-center gap-2 whitespace-nowrap rounded-lg bg-[#283039] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#3A434D] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">
+<span class="material-symbols-outlined text-base">ios_share</span>
+                Export
+              </button>
+<button class="inline-flex h-10 items-center justify-center gap-2 whitespace-nowrap rounded-lg bg-[var(--primary-color)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">
+<span class="material-symbols-outlined text-base">add</span>
+                New Entry
+              </button>
+</div>
+</div>
+<div class="space-y-8">
+<div>
+<h3 class="mb-4 text-xl font-semibold tracking-tight">Today</h3>
+<div class="flow-root">
+<ul class="-mb-8">
+<li>
+<div class="relative pb-8">
+<span aria-hidden="true" class="absolute left-4 top-4 -ml-px h-full w-0.5 bg-[#283039]"></span>
+<div class="relative flex items-start space-x-4">
+<div>
+<div class="relative h-8 w-8">
+<div class="flex h-8 w-8 items-center justify-center rounded-full bg-[#283039]">
+<span class="material-symbols-outlined text-base text-gray-400">psychology</span>
+</div>
+</div>
+</div>
+<div class="min-w-0 flex-1 pt-1.5">
+<p class="text-sm text-gray-400">10:15 AM</p>
+<p class="mt-1 text-base text-gray-200">I'm feeling a bit tired today, but I'm ready to tackle my tasks.</p>
+</div>
+</div>
+</div>
+</li>
+<li>
+<div class="relative pb-8">
+<span aria-hidden="true" class="absolute left-4 top-4 -ml-px h-full w-0.5 bg-[#283039]"></span>
+<div class="relative flex items-start space-x-4">
+<div>
+<div class="relative h-8 w-8">
+<div class="flex h-8 w-8 items-center justify-center rounded-full bg-[#283039]">
+<span class="material-symbols-outlined text-base text-gray-400">work</span>
+</div>
+</div>
+</div>
+<div class="min-w-0 flex-1 pt-1.5">
+<p class="text-sm text-gray-400">11:30 AM</p>
+<p class="mt-1 text-base text-gray-200">Just finished a productive meeting with the team. We're making great progress on the project.</p>
+</div>
+</div>
+</div>
+</li>
+<li>
+<div class="relative pb-8">
+<span aria-hidden="true" class="absolute left-4 top-4 -ml-px h-full w-0.5 bg-[#283039]"></span>
+<div class="relative flex items-start space-x-4">
+<div>
+<div class="relative h-8 w-8">
+<div class="flex h-8 w-8 items-center justify-center rounded-full bg-[#283039]">
+<span class="material-symbols-outlined text-base text-gray-400">lunch_dining</span>
+</div>
+</div>
+</div>
+<div class="min-w-0 flex-1 pt-1.5">
+<p class="text-sm text-gray-400">12:45 PM</p>
+<p class="mt-1 text-base text-gray-200">Enjoying a quiet lunch break. Thinking about what to work on next.</p>
+</div>
+</div>
+</div>
+</li>
+<li>
+<div class="relative pb-8">
+<span aria-hidden="true" class="absolute left-4 top-4 -ml-px h-full w-0.5 bg-[#283039]"></span>
+<div class="relative flex items-start space-x-4">
+<div>
+<div class="relative h-8 w-8">
+<div class="flex h-8 w-8 items-center justify-center rounded-full bg-[#283039]">
+<span class="material-symbols-outlined text-base text-gray-400">code</span>
+</div>
+</div>
+</div>
+<div class="min-w-0 flex-1 pt-1.5">
+<p class="text-sm text-gray-400">2:00 PM</p>
+<p class="mt-1 text-base text-gray-200">Back to work. Focusing on coding and debugging.</p>
+</div>
+</div>
+</div>
+</li>
+<li>
+<div class="relative pb-8">
+<span aria-hidden="true" class="absolute left-4 top-4 -ml-px h-full w-0.5 bg-[#283039]"></span>
+<div class="relative flex items-start space-x-4">
+<div>
+<div class="relative h-8 w-8">
+<div class="flex h-8 w-8 items-center justify-center rounded-full bg-[#283039]">
+<span class="material-symbols-outlined text-base text-gray-400">coffee</span>
+</div>
+</div>
+</div>
+<div class="min-w-0 flex-1 pt-1.5">
+<p class="text-sm text-gray-400">4:45 PM</p>
+<p class="mt-1 text-base text-gray-200">Break time! Grabbing a coffee and stretching my legs.</p>
+</div>
+</div>
+</div>
+</li>
+<li>
+<div class="relative">
+<div class="relative flex items-start space-x-4">
+<div>
+<div class="relative h-8 w-8">
+<div class="flex h-8 w-8 items-center justify-center rounded-full bg-[#283039]">
+<span class="material-symbols-outlined text-base text-gray-400">bedtime</span>
+</div>
+</div>
+</div>
+<div class="min-w-0 flex-1 pt-1.5">
+<p class="text-sm text-gray-400">10:30 PM</p>
+<p class="mt-1 text-base text-gray-200">Time to sleep. Looking forward to a new day.</p>
+</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div>
+<h3 class="mb-4 text-xl font-semibold tracking-tight">Yesterday</h3>
+<div class="flow-root">
+<ul class="-mb-8">
+<li>
+<div class="relative pb-8">
+<span aria-hidden="true" class="absolute left-4 top-4 -ml-px h-full w-0.5 bg-[#283039]"></span>
+<div class="relative flex items-start space-x-4">
+<div>
+<div class="relative h-8 w-8">
+<div class="flex h-8 w-8 items-center justify-center rounded-full bg-[#283039]">
+<span class="material-symbols-outlined text-base text-gray-400">psychology</span>
+</div>
+</div>
+</div>
+<div class="min-w-0 flex-1 pt-1.5">
+<p class="text-sm text-gray-400">9:05 PM</p>
+<p class="mt-1 text-base text-gray-200">Reflecting on the day's events. It was a good one.</p>
+</div>
+</div>
+</div>
+</li>
+<li>
+<div class="relative">
+<div class="relative flex items-start space-x-4">
+<div>
+<div class="relative h-8 w-8">
+<div class="flex h-8 w-8 items-center justify-center rounded-full bg-[#283039]">
+<span class="material-symbols-outlined text-base text-gray-400">home</span>
+</div>
+</div>
+</div>
+<div class="min-w-0 flex-1 pt-1.5">
+<p class="text-sm text-gray-400">7:30 PM</p>
+<p class="mt-1 text-base text-gray-200">Relaxing at home. Thinking about tomorrow's plans.</p>
+</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+
+</body></html>

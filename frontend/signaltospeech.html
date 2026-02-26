@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Signal-to-Speech Translation - Neurovox</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            color: white;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .translation-box {
+            background: #1c1c1c;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            background: #333;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            resize: vertical;
+        }
+        button {
+            background: linear-gradient(315deg, #00c6ff 0%, #0072ff 74%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: linear-gradient(315deg, #0072ff 0%, #00c6ff 74%);
+        }
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: #333;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .output {
+            background: #333;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            min-height: 50px;
+        }
+        #brainWaveCanvas {
+            width: 100%;
+            height: 100px;
+        }
+    </style>
+</head>
+<body>
+    <button class="back-btn" onclick="window.location.href='index.html'">← Back to Home</button>
+
+    <div class="container">
+        <div class="header">
+            <h1 class="text-4xl font-bold">Signal-to-Speech Translation</h1>
+            <p class="text-gray-300 mt-4">Convert brain signals to speech with AI-powered translation</p>
+        </div>
+
+        <div class="translation-box">
+            <h2 class="text-2xl font-semibold mb-4">Brain Wave Visualization</h2>
+            <img src="brain waves.webp" alt="Brain Wave Visualization" class="w-32 h-32 mb-6 filter drop-shadow-lg" />
+        </div>
+
+        <div class="translation-box">
+            <h2 class="text-2xl font-semibold mb-4">Input Text (Simulated Brain Signal)</h2>
+            <textarea id="inputText" placeholder="Enter text to convert to speech..."></textarea>
+
+            <div class="mt-4 flex items-center space-x-4">
+                <button id="translateBtn">Translate & Speak</button>
+                <button id="stopBtn">Stop Speech</button>
+                <button id="senseBtn" class="bg-gradient-to-r from-green-400 to-blue-500 hover:from-blue-500 hover:to-green-400">Sense Brain Waves</button>
+            </div>
+
+            <div class="mt-4">
+                <label for="storedDataSelect" class="block mb-2 font-semibold">Load Stored Data:</label>
+                <select id="storedDataSelect" class="w-full p-2 bg-gray-700 text-white rounded">
+                    <option value="">-- Select Sample Data --</option>
+                    <option value="Hello, how are you?">Hello, how are you?</option>
+                    <option value="I am thinking of a sunny day.">I am thinking of a sunny day.</option>
+                    <option value="Let's communicate through brain signals.">Let's communicate through brain signals.</option>
+                    <option value="Neurovox is amazing!">Neurovox is amazing!</option>
+                </select>
+            </div>
+
+            <div class="mt-4">
+                <h3 class="text-xl font-semibold mb-2">Suggestions:</h3>
+                <div id="suggestions" class="flex flex-wrap gap-2">
+                    <button class="suggestion-btn bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-white">Greetings</button>
+                    <button class="suggestion-btn bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-white">Help me</button>
+                    <button class="suggestion-btn bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-white">Thank you</button>
+                    <button class="suggestion-btn bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-white">Goodbye</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="translation-box">
+            <h2 class="text-2xl font-semibold mb-4">Translation Output</h2>
+            <div id="output" class="output">Translation will appear here...</div>
+        </div>
+
+        <div class="translation-box">
+            <h2 class="text-2xl font-semibold mb-4">Voice Settings</h2>
+            <div class="flex flex-wrap space-x-4 mb-4">
+                <div>
+                    <label for="langSelect">Language:</label>
+                    <select id="langSelect" class="ml-2 p-2 bg-gray-700 text-white rounded">
+                        <option value="en-US">English (US)</option>
+                        <option value="bn-IN">Bengali (India)</option>
+                        <option value="mr-IN">Marathi (India)</option>
+                        <option value="hi-IN">Hindi (India)</option>
+                        <option value="es-ES">Spanish (Spain)</option>
+                        <option value="fr-FR">French (France)</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="voiceSelect">Voice:</label>
+                    <select id="voiceSelect" class="ml-2 p-2 bg-gray-700 text-white rounded"></select>
+                </div>
+            </div>
+            <div class="flex space-x-4">
+                <div>
+                    <label for="rate">Rate:</label>
+                    <input type="range" id="rate" min="0.5" max="2" step="0.1" value="1" class="ml-2">
+                    <span id="rateValue">1</span>
+                </div>
+                <div>
+                    <label for="pitch">Pitch:</label>
+                    <input type="range" id="pitch" min="0" max="2" step="0.1" value="1" class="ml-2">
+                    <span id="pitchValue">1</span>
+                </div>
+                <div>
+                    <label for="volume">Volume:</label>
+                    <input type="range" id="volume" min="0" max="1" step="0.1" value="1" class="ml-2">
+                    <span id="volumeValue">1</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const inputText = document.getElementById('inputText');
+        const output = document.getElementById('output');
+        const translateBtn = document.getElementById('translateBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const senseBtn = document.getElementById('senseBtn');
+        const storedDataSelect = document.getElementById('storedDataSelect');
+        const suggestions = document.getElementById('suggestions');
+        const voiceSelect = document.getElementById('voiceSelect');
+        const langSelect = document.getElementById('langSelect');
+        const rate = document.getElementById('rate');
+        const pitch = document.getElementById('pitch');
+        const volume = document.getElementById('volume');
+        const rateValue = document.getElementById('rateValue');
+        const pitchValue = document.getElementById('pitchValue');
+        const volumeValue = document.getElementById('volumeValue');
+
+        let synth = window.speechSynthesis;
+        let voices = [];
+
+        function populateVoiceList() {
+            voices = synth.getVoices();
+            const selectedLang = langSelect.value;
+            voiceSelect.innerHTML = '';
+            voices.filter(voice => voice.lang.startsWith(selectedLang.split('-')[0])).forEach((voice, i) => {
+                const option = document.createElement('option');
+                option.textContent = voice.name + ' (' + voice.lang + ')';
+                option.value = i;
+                voiceSelect.appendChild(option);
+            });
+            if (voiceSelect.options.length === 0) {
+                const option = document.createElement('option');
+                option.textContent = 'No voices available for this language';
+                option.value = '';
+                voiceSelect.appendChild(option);
+            }
+        }
+
+        populateVoiceList();
+        if (speechSynthesis.onvoiceschanged !== undefined) {
+            speechSynthesis.onvoiceschanged = populateVoiceList;
+        }
+
+        langSelect.addEventListener('change', populateVoiceList);
+
+        translateBtn.addEventListener('click', () => {
+            const text = inputText.value.trim();
+            if (!text) {
+                alert('Please enter some text to translate.');
+                return;
+            }
+
+            // Simulate translation (in real app, this would process brain signals)
+            const translated = text; // For demo, just use the input
+            output.textContent = translated;
+
+            // Speak the text
+            const utterance = new SpeechSynthesisUtterance(translated);
+            utterance.lang = langSelect.value;
+            const selectedVoice = voices[voiceSelect.value];
+            if (selectedVoice) {
+                utterance.voice = selectedVoice;
+            }
+            utterance.rate = rate.value;
+            utterance.pitch = pitch.value;
+            utterance.volume = volume.value;
+
+            synth.speak(utterance);
+        });
+
+        stopBtn.addEventListener('click', () => {
+            synth.cancel();
+        });
+
+        rate.addEventListener('input', () => {
+            rateValue.textContent = rate.value;
+        });
+
+        pitch.addEventListener('input', () => {
+            pitchValue.textContent = pitch.value;
+        });
+
+        volume.addEventListener('input', () => {
+            volumeValue.textContent = volume.value;
+        });
+
+        storedDataSelect.addEventListener('change', () => {
+            inputText.value = storedDataSelect.value;
+        });
+
+        senseBtn.addEventListener('click', () => {
+            const samples = [
+                "Hello, how are you?",
+                "I am thinking of a sunny day.",
+                "Let's communicate through brain signals.",
+                "Neurovox is amazing!"
+            ];
+            const randomSample = samples[Math.floor(Math.random() * samples.length)];
+            inputText.value = randomSample;
+            output.textContent = '';
+        });
+
+        suggestions.querySelectorAll('.suggestion-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                inputText.value = button.textContent;
+                output.textContent = '';
+            });
+        });
+
+        // Brain wave visualization
+        const canvas = document.getElementById('brainWaveCanvas');
+        const ctx = canvas.getContext('2d');
+        let waveOffset = 0;
+
+        function resizeCanvas() {
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+        }
+
+        function drawWave() {
+            resizeCanvas();
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = '#00ffff';
+            ctx.beginPath();
+
+            const amplitude = 20;
+            const frequency = 0.02;
+            const speed = 0.05;
+
+            for (let x = 0; x < canvas.width; x++) {
+                const y = canvas.height / 2 + amplitude * Math.sin(frequency * (x + waveOffset));
+                if (x === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+
+            ctx.stroke();
+            waveOffset += speed;
+            requestAnimationFrame(drawWave);
+        }
+
+        window.addEventListener('resize', drawWave);
+        drawWave();
+    </script>
+</body>
+</html>

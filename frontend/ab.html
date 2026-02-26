@@ -1,0 +1,136 @@
+d b<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NeuroVox - About Us</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #0f172a; /* bg-gray-900 */
+      color: #f1f5f9; /* text-slate-100 */
+    }
+    .section-header {
+      
+      color: #818cf8; /* indigo-400 */
+      font-weight: 700;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .team-member {
+      background-color: white;
+      border-radius: 0.75rem;
+      padding: 1rem;
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.7);
+      transition: box-shadow 0.3s ease;
+    }
+    .team-member:hover {
+      box-shadow: 0 10px 25px -3px rgba(99,102,241,0.7);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="fixed top-0 left-0 right-0 bg-gray-900 bg-opacity-90 backdrop-blur-md shadow-md z-50">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <a href="index.html" class="text-indigo-400 font-bold text-xl select-none">NeuroVox</a>
+      <ul class="hidden md:flex space-x-8 text-gray-300 font-semibold">
+        <li><a href="index.html" class="hover:text-indigo-400 transition">Home</a></li>
+        <li><a href="#about" class="hover:text-indigo-400 transition">About</a></li>
+        <li><a href="#services" class="hover:text-indigo-400 transition">Services</a></li>
+        <li><a href="#pricing" class="hover:text-indigo-400 transition">Pricing</a></li>
+        <li><a href="#tools" class="hover:text-indigo-400 transition">Tools</a></li>
+        <li><a href="#team" class="hover:text-indigo-400 transition">Team</a></li>
+        <li><a href="#contact" class="hover:text-indigo-400 transition">Contact</a></li>
+      </ul>
+      <a href="login.html" class="hidden md:inline-block px-4 py-2 border border-indigo-400 rounded-md text-indigo-400 font-semibold hover:bg-indigo-400 hover:text-gray-900 transition">Login</a>
+      <button id="mobile-menu-button" class="md:hidden text-indigo-400 focus:outline-none">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 8h16M4 16h16" />
+        </svg>
+      </button>
+    </div>
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden bg-gray-900 bg-opacity-95">
+      <ul class="flex flex-col space-y-2 px-6 py-4 text-gray-300 font-semibold">
+        <li><a href="index.html" class="block hover:text-indigo-400 transition">Home</a></li>
+        <li><a href="#about" class="block hover:text-indigo-400 transition">About</a></li>
+        <li><a href="#services" class="block hover:text-indigo-400 transition">Services</a></li>
+        <li><a href="#pricing" class="block hover:text-indigo-400 transition">Pricing</a></li>
+        <li><a href="#tools" class="block hover:text-indigo-400 transition">Tools</a></li>
+        <li><a href="#team" class="block hover:text-indigo-400 transition">Team</a></li>
+        <li><a href="#contact" class="block hover:text-indigo-400 transition">Contact</a></li>
+        <li><a href="login.html" class="block border border-indigo-400 rounded-md px-4 py-2 text-indigo-400 font-semibold hover:bg-indigo-400 hover:text-gray-900 transition">Login</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="max-w-7xl mx-auto px-6 pt-28 pb-16 space-y-16">
+
+    <!-- About Section -->
+    <section id="about" class="max-w-4xl mx-auto text-center">
+      <h2 class="section-header">About NeuroVox</h2>
+      <p class="text-gray-300 text-lg leading-relaxed">
+        NeuroVox is a full-stack web application designed to help individuals with speech impairments communicate naturally and securely using a non-invasive brain-signal translation headband. It combines real-time brain state monitoring, emergency response, assistive technologies, and emotional expression—all wrapped in a sleek, accessible interface.
+      </p>
+    </section>
+
+    <!-- Mission & Vision -->
+    <section id="mission-vision" class="max-w-4xl mx-auto text-center space-y-6">
+      <h2 class="section-header">Mission & Vision</h2>
+      <p class="text-gray-300 text-lg leading-relaxed">
+        Our mission is to empower individuals with speech impairments by transforming silence into hope through innovative neurotechnology. We envision a world where communication barriers are eliminated, enabling everyone to express themselves freely and securely.
+      </p>
+    </section>
+
+    <!-- Team Section -->
+    <section id="team" class="max-w-5xl mx-auto">
+      <h2 class="section-header text-center mb-8">Team Vianra</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="team-member text-center p-6">
+          <img src="HSV2.png" alt="Harsita Singh" class="mx-auto rounded-full w-24 h-24 mb-4 object-cover shadow-lg border-2 border-gray-300" />
+          <h3 class="font-bold text-indigo-600 text-xl mb-2">Harsita Singh</h3>
+          <p class="text-gray-700 font-semibold mb-1">Lead Developer & Vision Architect</p>
+          <p class="text-gray-600 text-sm">Driving the technical vision and development of NeuroVox.</p>
+        </div>
+        <div class="team-member text-center p-6">
+          <img src="SHWETA3.png" alt="Shweta Prajapati" class="mx-auto rounded-full w-24 h-24 mb-4 object-cover shadow-lg border-2 border-gray-300" />
+          <h3 class="font-bold text-indigo-600 text-xl mb-2">Shweta Prajapati</h3>
+          <p class="text-gray-700 font-semibold mb-1">Research Lead & NeuroTech Strategist</p>
+          <p class="text-gray-600 text-sm">Leading research and strategy in neurotechnology applications.</p>
+        </div>
+        <div class="team-member text-center p-6">
+          <img src="KHUSHIIIII.png" alt="Khushi Kushwaha" class="mx-auto rounded-full w-24 h-24 mb-4 object-cover shadow-lg border-2 border-gray-300" />
+          <h3 class="font-bold text-indigo-600 text-xl mb-2">Khushi Kushwaha</h3>
+          <p class="text-gray-700 font-semibold mb-1">Presentation Designer & Outreach Coordinator</p>
+          <p class="text-gray-600 text-sm">Designing presentations and coordinating outreach efforts.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Closing Line -->
+    <section id="closing" class="max-w-4xl mx-auto text-center">
+      <p class="text-indigo-400 font-semibold text-lg italic">
+        Built with empathy, innovation, and purpose. NeuroVox — Silence into Hope.
+      </p>
+    </section>
+
+  </main>
+
+  <footer class="bg-gray-900 text-gray-400 py-8 text-center text-sm">
+    &copy; 2024 NeuroVox. All rights reserved.
+  </footer>
+
+  <script>
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    mobileMenuButton.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+  </script>
+
+</body>
+</html>

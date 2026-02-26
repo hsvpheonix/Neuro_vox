@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Share Report - NeuroVox</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <style>
+        body {
+            background-color: #121212;
+            color: white;
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            gap: 40px;
+            margin-top: 40px;
+            max-width: 900px;
+            width: 100%;
+            padding: 20px;
+        }
+
+        .panel {
+            background-color: #1e1e1e;
+            border-radius: 12px;
+            padding: 30px;
+            flex: 1;
+            box-shadow: 0 0 20px #000000aa;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .panel h1 {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .panel p {
+            color: #bbb;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid #444;
+            cursor: pointer;
+            transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
+        }
+        .radio-option.glow {
+            box-shadow: 0 0 15px #00c6ff;
+            border-color: #00c6ff;
+        }
+
+        .radio-option input[type="radio"] {
+            accent-color: #00c6ff;
+            cursor: pointer;
+        }
+
+        .radio-option:hover {
+            background-color: #292929;
+            border-color: #00c6ff;
+        }
+
+        .radio-option input[type="radio"]:checked + label {
+            font-weight: 600;
+            color: #00c6ff;
+        }
+
+        .radio-label {
+            flex-grow: 1;
+            font-weight: 500;
+            user-select: none;
+        }
+
+        .radio-description {
+            font-size: 0.8rem;
+            color: #888;
+            user-select: none;
+        }
+
+        .input-group {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .input-group label {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .input-group input[type="email"],
+        .input-group select {
+            background-color: #121212;
+            border: 1px solid #444;
+            border-radius: 6px;
+            padding: 10px 12px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input[type="email"]:focus,
+        .input-group select:focus {
+            border-color: #00c6ff;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .checkbox-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            user-select: none;
+            transition: box-shadow 0.3s;
+        }
+        .checkbox-option.glow {
+            box-shadow: 0 0 15px #00c6ff;
+        }
+
+        .checkbox-option input[type="checkbox"] {
+            accent-color: #00c6ff;
+            cursor: pointer;
+        }
+
+        .checkbox-label {
+            font-size: 0.9rem;
+            color: white;
+        }
+
+        .time-range {
+            margin-top: 20px;
+        }
+
+        .time-range select {
+            background-color: #121212;
+            border: 1px solid #444;
+            border-radius: 6px;
+            padding: 10px 12px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+            width: 100%;
+        }
+
+        .time-range select:focus {
+            border-color: #00c6ff;
+        }
+
+        .share-button {
+            margin-top: 30px;
+            background-color: #0072ff;
+            color: white;
+            font-weight: 600;
+            padding: 12px 0;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100%;
+            font-size: 1.1rem;
+        }
+
+        .share-button:hover {
+            background-color: #005bb5;
+        }
+
+        .report-preview {
+            background-color: #292929;
+            border-radius: 12px;
+            padding: 25px;
+            color: white;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            box-shadow: 0 0 20px #000000aa;
+            user-select: none;
+        }
+
+        .report-preview h2 {
+            font-weight: 700;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+        }
+
+        .report-section {
+            margin-bottom: 15px;
+        }
+
+        .report-section strong {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .report-section .small-text {
+            font-size: 0.8rem;
+            color: #888;
+            font-style: italic;
+            margin-top: 10px;
+        }
+
+
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <section class="panel sharing-options">
+            <h1>Share Report</h1>
+            <p>Choose how you want to share your health report. You can send it directly via email, generate a secure link, or integrate with other healthcare platforms.</p>
+
+            <form id="shareReportForm">
+                <div class="radio-group">
+                    <div class="radio-option">
+                        <input type="radio" id="emailOption" name="shareOption" value="email" checked />
+                        <label for="emailOption" class="radio-label">
+                            Email
+                            <div class="radio-description">Send the report directly to an email address.</div>
+                        </label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="linkOption" name="shareOption" value="link" />
+                        <label for="linkOption" class="radio-label">
+                            Secure Link
+                            <div class="radio-description">Generate a secure, time-limited link to share.</div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="input-group" id="recipientEmailGroup">
+                    <label for="recipientEmail">Recipient Email</label>
+                    <input type="email" id="recipientEmail" name="recipientEmail" placeholder="Enter email address" required />
+                </div>
+
+                <div class="checkbox-group">
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="patientInfo" name="contentOptions" value="patientInfo" checked />
+                        <label for="patientInfo" class="checkbox-label">Patient Information</label>
+                    </div>
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="brainwaveActivity" name="contentOptions" value="brainwaveActivity" checked />
+                        <label for="brainwaveActivity" class="checkbox-label">Brainwave Activity</label>
+                    </div>
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="speechPatterns" name="contentOptions" value="speechPatterns" checked />
+                        <label for="speechPatterns" class="checkbox-label">Speech Patterns</label>
+                    </div>
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="cognitiveLoad" name="contentOptions" value="cognitiveLoad" />
+                        <label for="cognitiveLoad" class="checkbox-label">Cognitive Load</label>
+                    </div>
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="sessionLogs" name="contentOptions" value="sessionLogs" />
+                        <label for="sessionLogs" class="checkbox-label">Session Logs</label>
+                    </div>
+                </div>
+
+                <div class="time-range">
+                    <label for="timeRange">Time Range</label>
+                    <select id="timeRange" name="timeRange">
+                        <option value="7">Last 7 Days</option>
+                        <option value="30">Last 30 Days</option>
+                        <option value="90">Last 90 Days</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="share-button">Share Report</button>
+            </form>
+        </section>
+
+        <section class="panel report-preview">
+            <h2>Report Preview</h2>
+            <div class="report-section">
+                <strong>Patient Information</strong>
+                <div>Ravi Kumar, DOB: 01/15/1985</div>
+            </div>
+            <div class="report-section">
+                <strong>Brainwave Activity</strong>
+                <div>Alpha Waves: Normal</div>
+                <div>Beta Waves: Elevated during speech tasks</div>
+            </div>
+            <div class="report-section">
+                <strong>Speech Patterns</strong>
+                <div>Clarity: 85%</div>
+                <div>Fluency: Improved by 15% over last month</div>
+            </div>
+            <div class="report-section small-text">
+                Cognitive Load data not included,<br />
+                Session Logs not included.
+            </div>
+            <div style="background-color: #1e1e1e; border-radius: 12px; padding: 20px; box-shadow: 0 0 20px #000000aa; display: flex; justify-content: center; align-items: center; height: 300px; width: 100%;">
+                <canvas id="shareReportChart" style="max-width: 100%; max-height: 100%;"></canvas>
+            </div>
+        </section>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const shareReportForm = document.getElementById('shareReportForm');
+        const emailOption = document.getElementById('emailOption');
+        const linkOption = document.getElementById('linkOption');
+        const recipientEmailGroup = document.getElementById('recipientEmailGroup');
+
+        function updateRecipientEmailVisibility() {
+            if (emailOption.checked) {
+                recipientEmailGroup.style.display = 'flex';
+            } else {
+                recipientEmailGroup.style.display = 'none';
+            }
+        }
+
+        emailOption.addEventListener('change', updateRecipientEmailVisibility);
+        linkOption.addEventListener('change', updateRecipientEmailVisibility);
+
+        updateRecipientEmailVisibility();
+
+        shareReportForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const selectedOption = document.querySelector('input[name="shareOption"]:checked').value;
+            const recipientEmail = document.getElementById('recipientEmail').value.trim();
+            const contentOptions = Array.from(document.querySelectorAll('input[name="contentOptions"]:checked')).map(cb => cb.value);
+            const timeRange = document.getElementById('timeRange').value;
+
+            if (selectedOption === 'email') {
+                if (!recipientEmail) {
+                    alert('Please enter a recipient email address.');
+                    return;
+                }
+                // Simple email format validation
+                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailPattern.test(recipientEmail)) {
+                    alert('Please enter a valid email address.');
+                    return;
+                }
+            }
+
+            // Show "Report Shared" box
+            showReportSharedBox();
+
+            // Here you would implement the actual sharing logic (e.g., send email, generate link, etc.)
+        });
+
+        // Add glow effect on click for radio and checkbox options
+        document.querySelectorAll('.radio-option, .checkbox-option').forEach(el => {
+            el.addEventListener('click', () => {
+                el.classList.toggle('glow');
+            });
+        });
+
+        function showReportSharedBox() {
+            let box = document.getElementById('reportSharedBox');
+            if (!box) {
+                box = document.createElement('div');
+                box.id = 'reportSharedBox';
+                box.style.position = 'fixed';
+                box.style.top = '20px';
+                box.style.right = '20px';
+                box.style.backgroundColor = '#0072ff';
+                box.style.color = 'white';
+                box.style.padding = '15px 25px';
+                box.style.borderRadius = '8px';
+                box.style.boxShadow = '0 0 15px #0072ff';
+                box.style.fontWeight = '600';
+                box.style.zIndex = '1000';
+                box.textContent = 'Report Shared Successfully!';
+                document.body.appendChild(box);
+                setTimeout(() => {
+                    window.location.href = 'healthreport_explore.html';
+                }, 3000);
+            }
+        }
+
+        // Chart.js graph below report preview
+        const ctx = document.getElementById('shareReportChart').getContext('2d');
+        const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, 'rgba(0, 198, 255, 0.6)');
+        gradient.addColorStop(1, 'rgba(0, 198, 255, 0.1)');
+
+        const shareReportChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Day 1', 'Day 5', 'Day 10', 'Day 15', 'Day 20', 'Day 25', 'Day 30'],
+                datasets: [{
+                    label: 'Brain Activity Index',
+                    data: [70, 75, 80, 78, 85, 90, 85],
+                    borderColor: '#00c6ff',
+                    backgroundColor: gradient,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 5,
+                    pointHoverRadius: 8,
+                    pointBackgroundColor: '#00c6ff',
+                    pointHoverBackgroundColor: '#0072ff',
+                    borderWidth: 3,
+                }]
+            },
+            options: {
+                responsive: true,
+                animation: {
+                    duration: 2000,
+                    easing: 'easeInOutQuad'
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        min: 60,
+                        max: 100,
+                        ticks: {
+                            color: 'white',
+                            font: {
+                                size: 12
+                            }
+                        },
+                        grid: {
+                            color: '#333'
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            color: 'white',
+                            font: {
+                                size: 12
+                            }
+                        },
+                        grid: {
+                            color: '#333'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: 'white',
+                            font: {
+                                size: 14
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: '#1e1e1e',
+                        titleColor: '#00c6ff',
+                        bodyColor: 'white',
+                        borderColor: '#00c6ff',
+                        borderWidth: 1,
+                        cornerRadius: 8,
+                        displayColors: false
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

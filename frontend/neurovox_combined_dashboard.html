@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>NeuroVox – Live Dashboard & Explore Feature</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            color: white;
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: #1c1c1c;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .metric {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #00c6ff;
+        }
+
+        .metric-label {
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+
+        .chart {
+            height: 200px;
+            background: #333;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ccc;
+        }
+
+        #brainActivityChartExplore {
+            width: 100% !important;
+            height: 400px !important;
+            background: #1c1c1c;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: #333;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 1000;
+        }
+
+        .back-btn:hover {
+            background: #555;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .nav-buttons {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .nav-buttons button {
+            background: #0072ff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .nav-buttons button:hover {
+            background: #005bb5;
+        }
+    </style>
+</head>
+
+<body>
+    <button class="back-btn" onclick="window.location.href='index.html'">← Back to Home</button>
+
+    <div class="container">
+        <div class="header">
+            <h1 class="text-4xl font-bold">NeuroVox – Giving Voice to Your Thoughts</h1>
+            <p class="text-gray-300 mt-2 max-w-3xl mx-auto text-center">
+                An AI-powered neuro headband that translates brain signals into speech, provides real-time insights,
+                and supports patients with medical-grade assistance.
+            </p>
+        </div>
+
+        <div class="nav-buttons">
+            <button id="btnLiveDashboard">Live Dashboard</button>
+            <button id="btnExploreFeature">Explore Feature</button>
+        </div>
+
+        <!-- Live Dashboard Section -->
+        <section id="liveDashboardSection">
+            <div class="dashboard-grid">
+                <div class="card">
+                    <h3 class="text-xl font-semibold mb-4">Brain Activity</h3>
+                    <div class="metric">
+                        <div class="metric-value" id="brainActivity">85%</div>
+                        <div class="metric-label">Current Level</div>
+                    </div>
+                    <div class="chart">EEG Waveform Chart</div>
+                </div>
+
+                <div class="card">
+                    <h3 class="text-xl font-semibold mb-4">Signal Quality</h3>
+                    <div class="metric">
+                        <div class="metric-value" id="signalQuality">92%</div>
+                        <div class="metric-label">Connection Strength</div>
+                    </div>
+                    <div class="chart">Signal Strength Graph</div>
+                </div>
+
+                <div class="card">
+                    <h3 class="text-xl font-semibold mb-4">Battery Status</h3>
+                    <div class="metric">
+                        <div class="metric-value" id="batteryLevel">78%</div>
+                        <div class="metric-label">Remaining Charge</div>
+                    </div>
+                    <div class="chart">Battery Usage Chart</div>
+                </div>
+
+                <div class="card">
+                    <h3 class="text-xl font-semibold mb-4">System Status</h3>
+                    <div class="mb-4">
+                        <div class="status-indicator"></div>EEG Sensors: Online
+                    </div>
+                    <div class="mb-4">
+                        <div class="status-indicator"></div>AI Processor: Online
+                    </div>
+                    <div class="mb-4">
+                        <div class="status-indicator"></div>Cloud Sync: Online
+                    </div>
+                    <div>
+                        <div class="status-indicator offline"></div>Backup System: Offline
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 class="text-xl font-semibold mb-4">Recent Alerts</h3>
+                    <ul class="text-sm text-gray-300">
+                        <li class="mb-2">• High brain activity detected at 14:32</li>
+                        <li class="mb-2">• Signal quality improved at 14:28</li>
+                        <li class="mb-2">• Battery low warning at 14:15</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3 class="text-xl font-semibold mb-4">Quick Actions</h3>
+                    <button class="w-full mb-2 p-2 bg-blue-600 hover:bg-blue-700 rounded">Calibrate Sensors</button>
+                    <button class="w-full mb-2 p-2 bg-green-600 hover:bg-green-700 rounded">Run Diagnostics</button>
+                    <button class="w-full p-2 bg-purple-600 hover:bg-purple-700 rounded">Generate Report</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Explore Feature Section -->
+        <section id="exploreFeatureSection" class="hidden">
+            <h2 class="text-3xl font-bold mb-4 text-center">Live Dashboard - Brain Activity Trends</h2>
+            <canvas id="brainActivityChartExplore"></canvas>
+        </section>
+    </div>
+
+    <script>
+        // Elements
+        const liveDashboardSection = document.getElementById('liveDashboardSection');
+        const exploreFeatureSection = document.getElementById('exploreFeatureSection');
+        const btnLiveDashboard = document.getElementById('btnLiveDashboard');
+        const btnExploreFeature = document.getElementById('btnExploreFeature');
+
+        // Show Live Dashboard and hide Explore Feature
+        btnLiveDashboard.addEventListener('click', () => {
+            liveDashboardSection.classList.remove('hidden');
+            exploreFeatureSection.classList.add('hidden');
+        });
+
+        // Show Explore Feature and hide Live Dashboard
+        btnExploreFeature.addEventListener('click', () => {
+            exploreFeatureSection.classList.remove('hidden');
+            liveDashboardSection.classList.add('hidden');
+        });
+
+        // Simulate real-time updates for Live Dashboard
+        function updateMetrics() {
+            const brainActivity = document.getElementById('brainActivity');
+            const signalQuality = document.getElementById('signalQuality');
+            const batteryLevel = document.getElementById('batteryLevel');
+
+            brainActivity.textContent = Math.floor(Math.random() * 20 + 70) + '%';
+            signalQuality.textContent = Math.floor(Math.random() * 10 + 85) + '%';
+            batteryLevel.textContent = Math.floor(Math.random() * 10 + 70) + '%';
+        }
+        setInterval(updateMetrics, 5000);
+
+        // Chart.js for Explore Feature
+        const ctxExplore = document.getElementById('brainActivityChartExplore').getContext('2d');
+        const dataExplore = {
+            labels: ['9 AM', '10 AM', '11 AM', '12 PM', '1 PM', '2 PM', '3 PM'],
+            datasets: [
+                {
+                    label: 'Focus',
+                    data: [0.8, 0.6, 0.5, 0.3, 0.7, 0.7, 0.9],
+                    backgroundColor: 'rgba(135, 206, 250, 0.8)',
+                    borderColor: 'rgba(135, 206, 250, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Relaxation',
+                    data: [0.4, 0.5, 0.6, 0.6, 0.5, 0.5, 0.2],
+                    backgroundColor: 'rgba(173, 216, 230, 0.8)',
+                    borderColor: 'rgba(173, 216, 230, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Stress',
+                    data: [0.2, 0.3, 0.4, 0.6, 0.7, 0.3, 0.1],
+                    backgroundColor: 'rgba(178, 34, 34, 0.8)',
+                    borderColor: 'rgba(178, 34, 34, 1)',
+                    borderWidth: 1
+                }
+            ]
+        };
+        const optionsExplore = {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 1,
+                    ticks: {
+                        callback: function (value) {
+                            return (value * 100) + '%';
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Percentage'
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            return context.dataset.label + ': ' + context.parsed.y;
+                        }
+                    }
+                },
+                legend: {
+                    position: 'top',
+                    labels: {
+                        color: 'white'
+                    }
+                }
+            }
+        };
+        const brainActivityChartExplore = new Chart(ctxExplore, {
+            type: 'bar',
+            data: dataExplore,
+            options: optionsExplore
+        });
+    </script>
+</body>
+
+</html>

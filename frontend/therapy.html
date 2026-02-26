@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-900 text-gray-300">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Therapy Sessions - NeuroVox</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    /* Custom scrollbar for past sessions */
+    .scrollbar-thin::-webkit-scrollbar {
+      height: 8px;
+    }
+    .scrollbar-thin::-webkit-scrollbar-track {
+      background: #1f2937;
+    }
+    .scrollbar-thin::-webkit-scrollbar-thumb {
+      background-color: #4f46e5;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body class="font-sans bg-gray-900 min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="flex items-center justify-between bg-gray-800 px-6 py-4 shadow-md">
+    <div class="flex items-center space-x-4">
+      <a href="index.html" class="text-indigo-400 font-bold text-xl select-none hover:underline px-4 py-2 border border-indigo-400 rounded-md shadow-md hover:bg-indigo-700 transition">← Back to Home</a>
+      <div class="text-indigo-400 font-bold text-xl select-none">NeuroVox</div>
+    </div>
+    <nav class="space-x-6 text-gray-400 font-semibold">
+      <a href="#" class="text-indigo-400 font-bold border-b-2 border-indigo-400">Therapy</a>
+    </nav>
+    <div>
+      <img src="neuro.jpg" alt="User Avatar" class="w-10 h-10 rounded-full border-2 border-indigo-400" />
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-grow max-w-6xl mx-auto px-6 py-10">
+
+    <h1 class="text-3xl font-bold mb-6 text-white">Therapy Sessions</h1>
+    <p class="mb-8 text-gray-400 max-w-xl">Review your progress and past sessions on your healing journey.</p>
+
+    <!-- Connect with Therapist -->
+    <section class="bg-gray-800 rounded-lg p-6 mb-10 flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0 md:space-x-4">
+      <div class="text-white font-semibold">Connect with Your Therapist</div>
+      <div class="text-gray-300 text-sm max-w-md">
+        Start a call with your therapist to discuss your progress.
+      </div>
+    <div class="flex space-x-4">
+      <button id="videoCallBtn" class="bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded-md flex items-center space-x-2 transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M10 9v6m-4-3h8" />
+        </svg>
+        <span>Video Call</span>
+      </button>
+      <button id="voiceCallBtn" class="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-md flex items-center space-x-2 transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h1l2 3 3-3h1l2 3 3-3h1" />
+        </svg>
+        <span>Voice Call</span>
+      </button>
+    </div>
+    </section>
+
+    <!-- Stats -->
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+      <div class="bg-gray-800 rounded-lg p-6 flex flex-col items-center space-y-2">
+        <div class="bg-indigo-600 p-3 rounded-full">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3" />
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
+          </svg>
+        </div>
+        <div class="text-white font-semibold text-lg">Total Sessions</div>
+        <div class="text-indigo-400 font-bold text-2xl">25</div>
+      </div>
+      <div class="bg-gray-800 rounded-lg p-6 flex flex-col items-center space-y-2">
+        <div class="bg-green-600 p-3 rounded-full">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+        <div class="text-white font-semibold text-lg">Current Streak</div>
+        <div class="text-green-400 font-bold text-2xl">5 Days</div>
+      </div>
+      <div class="bg-gray-800 rounded-lg p-6 flex flex-col items-center space-y-2">
+        <div class="bg-yellow-500 p-3 rounded-full">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L12 21l2.25-4M12 3v18" />
+          </svg>
+        </div>
+        <div class="text-white font-semibold text-lg">Milestones</div>
+        <div class="text-yellow-400 font-bold text-2xl">3/5</div>
+      </div>
+    </section>
+
+    <!-- Progress -->
+    <section class="bg-gray-800 rounded-lg p-6 mb-10">
+      <h2 class="text-xl font-semibold mb-4">Your Progress</h2>
+      <div class="mb-4">
+        <div class="flex justify-between mb-1">
+          <span>Program Completion</span>
+          <span>60%</span>
+        </div>
+        <div class="w-full bg-gray-700 rounded-full h-4">
+          <div class="bg-indigo-600 h-4 rounded-full" style="width: 60%;"></div>
+        </div>
+      </div>
+      <div>
+        <div class="flex space-x-4 items-center">
+          <div class="flex flex-col items-center text-xs">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 17l-5 3 1-6-4-4 6-1 3-6 3 6 6 1-4 4 1 6-5-3z" />
+            </svg>
+            <span>First Session</span>
+          </div>
+          <div class="flex flex-col items-center text-xs">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4" />
+            </svg>
+            <span>5 Sessions</span>
+          </div>
+          <div class="flex flex-col items-center text-xs">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3" />
+            </svg>
+            <span>10 Sessions</span>
+          </div>
+          <div class="flex flex-col items-center text-xs text-gray-600">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
+            </svg>
+            <span>25 Sessions</span>
+          </div>
+          <div class="flex flex-col items-center text-xs text-gray-600">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
+            </svg>
+            <span>Program Master</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Past Sessions -->
+    <section>
+      <h2 class="text-xl font-semibold mb-6">Past Sessions</h2>
+      <div class="flex space-x-6 overflow-x-auto scrollbar-thin pb-4">
+        <!-- Session 1 -->
+        <div class="bg-gray-800 rounded-lg shadow-lg min-w-[220px] flex-shrink-0" data-video-path="WhatsApp Video 2025-09-12 at 23.46.05.mp4" onclick="playVideo(this)">
+          <video controls class="rounded-t-lg w-full h-40 object-cover" poster="session1-poster.jpg">
+            <source src="WhatsApp Video 2025-09-14 at 12.24.15.mp4 " type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+          <div class="p-4">
+            <h3 class="font-semibold mb-1">Session 1:Post Stroke Exercise-Upper Limb </h3>
+            <p class="text-sm text-gray-400">January 15, 2024</p>
+          </div>
+        </div>
+        <!-- Session 2 -->
+        <div class="bg-gray-800 rounded-lg shadow-lg min-w-[220px] flex-shrink-0" data-video-path="WhatsApp Video 2025-09-14 at 12.24.35.mp4" onclick="playVideo(this)">
+          <video controls class="rounded-t-lg w-full h-40 object-cover" poster="session2-poster.jpg">
+            <source src="WhatsApp Video 2025-09-14 at 12.24.35.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+          <div class="p-4">
+            <h3 class="font-semibold mb-1">Session 2: Post stroke exersice -Lower limb</h3>
+            <p class="text-sm text-gray-400">January 22, 2024</p>
+          </div>
+        </div>
+        <!-- Session 3 -->
+        <div class="bg-gray-800 rounded-lg shadow-lg min-w-[220px] flex-shrink-0" data-video-path="WhatsApp Video 2025-09-14 at 12.26.53.mp4" onclick="playVideo(this)">
+          <video controls class="rounded-t-lg w-full h-40 object-cover" poster="session3-poster.jpg">
+            <source src="WhatsApp Video 2025-09-14 at 12.26.53.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+          <div class="p-4">
+            <h3 class="font-semibold mb-1">Session 3: Position a Stroke Patient</h3>
+            <p class="text-sm text-gray-400">January 29, 2024</p>
+          </div>
+        </div>
+        <!-- Session 4 -->
+        <div class="bg-gray-800 rounded-lg shadow-lg min-w-[220px] flex-shrink-0" data-video-path="WhatsApp Video 2025-09-14 at 12.26.53.mp4" onclick="playVideo(this)">
+          <video controls class="rounded-t-lg w-full h-40 object-cover" poster="session4-poster.jpg">
+            <source src="WhatsApp Video 2025-09-14 at 12.45.21.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+          <div class="p-4">
+            <h3 class="font-semibold mb-1">Session 4:Hand Movements </h3>
+            <p class="text-sm text-gray-400">February 5, 2024</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+    <script>
+    let currentPlayingVideo = null;
+    let currentPlayingElement = null;
+
+    function playVideo(element) {
+      const videoPath = element.getAttribute('data-video-path');
+      if (!videoPath) {
+        alert('No video path specified.');
+        return;
+      }
+      // Pause currently playing video if any and different from clicked
+      if (currentPlayingElement && currentPlayingElement !== element) {
+        const prevVideo = currentPlayingElement.querySelector('video');
+        if (prevVideo && !prevVideo.paused) {
+          prevVideo.pause();
+          prevVideo.currentTime = 0;
+        }
+      }
+      currentPlayingElement = element;
+
+      // Create modal if not exists
+      let modal = document.getElementById('videoModal');
+      if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'videoModal';
+        modal.className = 'fixed inset-0 bg-black bg-opacity-50 backdrop-blur-md flex items-center justify-center z-50';
+        modal.innerHTML = `
+          <div class="relative bg-white p-4 rounded-lg max-w-4xl w-full mx-4">
+            <button onclick="closeVideoModal()" class="absolute top-2 right-2 text-gray-600 hover:text-gray-800 text-2xl font-bold">&times;</button>
+            <video controls class="w-full rounded-lg" id="modalVideo">
+              <source src="" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        `;
+        document.body.appendChild(modal);
+      }
+      const video = modal.querySelector('video');
+      const source = video.querySelector('source');
+
+      source.src = videoPath;
+      video.load();
+      modal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      video.play();
+    }
+
+    function closeVideoModal() {
+      const modal = document.getElementById('videoModal');
+      if (modal) {
+        const video = modal.querySelector('video');
+        video.pause();
+        modal.classList.add('hidden');
+        document.body.style.overflow = 'auto';
+        currentPlayingElement = null;
+      }
+    }
+
+    // New code to handle call box modal
+    const videoCallBtn = document.getElementById('videoCallBtn');
+    const voiceCallBtn = document.getElementById('voiceCallBtn');
+
+    let callBoxModal = null;
+
+    function showCallBox() {
+      if (callBoxModal) return; // Already shown
+
+      callBoxModal = document.createElement('div');
+      callBoxModal.id = 'callBoxModal';
+      callBoxModal.className = 'fixed inset-0 bg-black bg-opacity-70 backdrop-blur-md flex items-center justify-center z-50';
+
+      // Load callbox.html content via fetch
+      fetch('callbox.html')
+        .then(response => response.text())
+        .then(html => {
+          callBoxModal.innerHTML = html;
+
+          // Append modal to body
+          document.body.appendChild(callBoxModal);
+          document.body.style.overflow = 'hidden';
+
+          // Listen for endCall event from callbox.html script
+          window.addEventListener('endCall', () => {
+            hideCallBox();
+          });
+
+          // Also listen for click on endCallBtn inside modal
+          const endCallBtn = callBoxModal.querySelector('#endCallBtn');
+          if (endCallBtn) {
+            endCallBtn.addEventListener('click', () => {
+              hideCallBox();
+            });
+          }
+        })
+        .catch(err => {
+          console.error('Failed to load call box:', err);
+          callBoxModal.remove();
+          callBoxModal = null;
+        });
+    }
+
+    function hideCallBox() {
+      if (!callBoxModal) return;
+      document.body.style.overflow = 'auto';
+      callBoxModal.remove();
+      callBoxModal = null;
+    }
+
+    videoCallBtn.addEventListener('click', () => {
+      showCallBox();
+    });
+
+    voiceCallBtn.addEventListener('click', () => {
+      showCallBox();
+    });
+  </script>
+
+</body>
+</html>

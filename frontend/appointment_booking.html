@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NeuroVox – Schedule an Appointment</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <style>
+    body {
+      background-color: #0f172a;
+      color: #f1f5f9;
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .back-btn {
+      background: #1e293b;
+      color: #818cf8;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-bottom: 20px;
+      transition: background-color 0.3s ease;
+    }
+
+    .back-btn:hover {
+      background-color: #3b82f6;
+      color: white;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      text-align: center;
+      color: #818cf8;
+    }
+
+    p.subtitle {
+      text-align: center;
+      margin-bottom: 2rem;
+      color: #cbd5e1;
+    }
+
+    .search-container {
+      max-width: 600px;
+      margin: 0 auto 2rem auto;
+      display: flex;
+      gap: 10px;
+    }
+
+    .search-input {
+      flex-grow: 1;
+      padding: 10px 15px;
+      border-radius: 8px;
+      border: none;
+      font-size: 1rem;
+      outline: none;
+      color: black;
+    }
+
+    .search-button {
+      background-color: #3b82f6;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .search-button:hover {
+      background-color: #2563eb;
+    }
+
+    #map {
+      width: 100%;
+      max-width: 900px;
+      height: 450px;
+      margin: 0 auto 2rem auto;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(59, 130, 246, 0.7);
+    }
+
+    .instructions {
+      max-width: 900px;
+      margin: 0 auto;
+      color: #cbd5e1;
+      font-size: 1rem;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.4);
+    }
+
+    .modal-content {
+      background-color: #1e293b;
+      margin: 15% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      max-width: 500px;
+      border-radius: 12px;
+      color: #f1f5f9;
+    }
+
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: white;
+      text-decoration: none;
+      cursor: pointer;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"
+  />
+</head>
+
+<body>
+  <button class="back-btn" onclick="window.location.href='index.html'">← Back to Home</button>
+  <h1>Schedule an Appointment</h1>
+  <p class="subtitle">Follow the steps below to book your appointment.</p>
+
+  <div class="search-container">
+    <input
+      type="text"
+      id="searchInput"
+      class="search-input"
+      placeholder="Search for a hospital or doctor"
+      aria-label="Search for a hospital or doctor"
+      list="hospitalList"
+    />
+    <datalist id="hospitalList">
+      <option value="AIIMS Delhi">
+      <option value="Apollo Hospitals Delhi">
+      <option value="Max Healthcare Saket">
+      <option value="Fortis Escorts Heart Institute">
+      <option value="Medanta - The Medicity Gurgaon">
+      <option value="NIMHANS Bangalore">
+      <option value="PGIMER Chandigarh">
+      <option value="Christian Medical College Vellore">
+      <option value="KEM Hospital Mumbai">
+      <option value="SGPGIMS Lucknow">
+    </datalist>
+    <button id="searchBtn" class="search-button">Search</button>
+  </div>
+
+  <div id="map" role="region" aria-label="Map showing hospitals and doctors"></div>
+
+  <div class="instructions">
+    <p>Click on a marker to view details and book an appointment.</p>
+  </div>
+
+  <!-- Hospital Suggestions Section -->
+  <section class="hospital-suggestions max-w-7xl mx-auto px-6 py-16">
+    <h2 class="text-3xl font-bold mb-8 text-center text-indigo-400">Top Hospitals for Neurology & Paralysis in India</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-gray-300">
+      <div class="bg-gray-800 rounded-xl p-6 shadow-lg hover:shadow-indigo-500 transition">
+        <h3 class="font-semibold text-lg mb-2 text-indigo-400">AIIMS Delhi</h3>
+        <p class="mb-4">All India Institute of Medical Sciences, premier neurology and neurosurgery center with advanced treatment facilities.</p>
+        <button onclick="bookAppointment('AIIMS Delhi')" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-md text-white font-semibold transition">Book Appointment</button>
+      </div>
+      <div class="bg-gray-800 rounded-xl p-6 shadow-lg hover:shadow-indigo-500 transition">
+        <h3 class="font-semibold text-lg mb-2 text-indigo-400">Apollo Hospitals Delhi</h3>
+        <p class="mb-4">Advanced neurology department specializing in stroke and paralysis treatment with state-of-the-art technology.</p>
+        <button onclick="bookAppointment('Apollo Hospitals Delhi')" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-md text-white font-semibold transition">Book Appointment</button>
+      </div>
+      <div class="bg-gray-800 rounded-xl p-6 shadow-lg hover:shadow-indigo-500 transition">
+        <h3 class="font-semibold text-lg mb-2 text-indigo-400">Max Healthcare Saket</h3>
+        <p class="mb-4">Specialized in neurology, neurosurgery, and rehabilitation with comprehensive care for neurological disorders.</p>
+        <button onclick="bookAppointment('Max Healthcare Saket')" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-md text-white font-semibold transition">Book Appointment</button>
+      </div>
+      <div class="bg-gray-800 rounded-xl p-6 shadow-lg hover:shadow-indigo-500 transition">
+        <h3 class="font-semibold text-lg mb-2 text-indigo-400">Medanta - The Medicity Gurgaon</h3>
+        <p class="mb-4">Institute of Neurosciences offering advanced treatment for neurological disorders and paralysis.</p>
+        <button onclick="bookAppointment('Medanta - The Medicity Gurgaon')" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-md text-white font-semibold transition">Book Appointment</button>
+      </div>
+      <div class="bg-gray-800 rounded-xl p-6 shadow-lg hover:shadow-indigo-500 transition">
+        <h3 class="font-semibold text-lg mb-2 text-indigo-400">NIMHANS Bangalore</h3>
+        <p class="mb-4">National Institute of Mental Health and Neurosciences, leading in neurology and mental health care.</p>
+        <button onclick="bookAppointment('NIMHANS Bangalore')" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-md text-white font-semibold transition">Book Appointment</button>
+      </div>
+      <div class="bg-gray-800 rounded-xl p-6 shadow-lg hover:shadow-indigo-500 transition">
+        <h3 class="font-semibold text-lg mb-2 text-indigo-400">PGIMER Chandigarh</h3>
+        <p class="mb-4">Postgraduate Institute of Medical Education and Research with an excellent neurology department.</p>
+        <button onclick="bookAppointment('PGIMER Chandigarh')" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-md text-white font-semibold transition">Book Appointment</button>
+      </div>
+      <div class="bg-gray-800 rounded-xl p-6 shadow-lg hover:shadow-indigo-500 transition">
+        <h3 class="font-semibold text-lg mb-2 text-indigo-400">Christian Medical College Vellore</h3>
+        <p class="mb-4">Renowned for neurology and neurosurgery services with a focus on patient-centered care.</p>
+        <button onclick="bookAppointment('Christian Medical College Vellore')" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-md text-white font-semibold transition">Book Appointment</button>
+      </div>
+      <div class="bg-gray-800 rounded-xl p-6 shadow-lg hover:shadow-indigo-500 transition">
+        <h3 class="font-semibold text-lg mb-2 text-indigo-400">KEM Hospital Mumbai</h3>
+        <p class="mb-4">King Edward Memorial Hospital with strong neurology and rehabilitation programs.</p>
+        <button onclick="bookAppointment('KEM Hospital Mumbai')" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-md text-white font-semibold transition">Book Appointment</button>
+      </div>
+      <div class="bg-gray-800 rounded-xl p-6 shadow-lg hover:shadow-indigo-500 transition">
+        <h3 class="font-semibold text-lg mb-2 text-indigo-400">SGPGIMS Lucknow</h3>
+        <p class="mb-4">Sanjay Gandhi Postgraduate Institute of Medical Sciences, specialized in neurosciences.</p>
+        <button onclick="bookAppointment('SGPGIMS Lucknow')" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-md text-white font-semibold transition">Book Appointment</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Appointment Modal -->
+  <div id="appointmentModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <h2 class="text-xl font-bold mb-4 text-indigo-400">Appointment Confirmed</h2>
+      <p id="appointmentDetails" class="mb-4"></p>
+      <button onclick="closeModal()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-md text-white font-semibold transition">Close</button>
+    </div>
+  </div>
+
+  <script>
+    // Initialize map centered on India
+    const map = L.map('map').setView([20.5937, 78.9629], 5);
+
+    // Add OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Top Indian hospitals for neurology and paralysis
+    const locations = [
+      {
+        name: "AIIMS Delhi",
+        coords: [28.5672, 77.2100],
+        type: "Hospital",
+        details: "All India Institute of Medical Sciences, Premier neurology and neurosurgery center"
+      },
+      {
+        name: "Apollo Hospitals Delhi",
+        coords: [28.5276, 77.2197],
+        type: "Hospital",
+        details: "Advanced neurology department with stroke and paralysis treatment"
+      },
+      {
+        name: "Max Healthcare Saket",
+        coords: [28.5273, 77.2190],
+        type: "Hospital",
+        details: "Specialized in neurology, neurosurgery, and rehabilitation"
+      },
+      {
+        name: "Fortis Escorts Heart Institute",
+        coords: [28.5276, 77.2197],
+        type: "Hospital",
+        details: "Comprehensive neurology care including paralysis management"
+      },
+      {
+        name: "Medanta - The Medicity Gurgaon",
+        coords: [28.4394, 77.0409],
+        type: "Hospital",
+        details: "Institute of Neurosciences with advanced treatment for neurological disorders"
+      },
+      {
+        name: "NIMHANS Bangalore",
+        coords: [12.9432, 77.5966],
+        type: "Hospital",
+        details: "National Institute of Mental Health and Neurosciences, Leading in neurology"
+      },
+      {
+        name: "PGIMER Chandigarh",
+        coords: [30.7650, 76.7683],
+        type: "Hospital",
+        details: "Postgraduate Institute of Medical Education and Research, Excellent neurology department"
+      },
+      {
+        name: "Christian Medical College Vellore",
+        coords: [12.9237, 79.1325],
+        type: "Hospital",
+        details: "Renowned for neurology and neurosurgery services"
+      },
+      {
+        name: "KEM Hospital Mumbai",
+        coords: [19.0014, 72.8400],
+        type: "Hospital",
+        details: "King Edward Memorial Hospital, Strong neurology and rehabilitation programs"
+      },
+      {
+        name: "SGPGIMS Lucknow",
+        coords: [26.8467, 80.9462],
+        type: "Hospital",
+        details: "Sanjay Gandhi Postgraduate Institute of Medical Sciences, Specialized in neurosciences"
+      }
+    ];
+
+    // Add markers to map
+    locations.forEach(loc => {
+      const marker = L.marker(loc.coords).addTo(map);
+      marker.bindPopup(
+        `<strong>${loc.name}</strong><br>${loc.type}<br>${loc.details}<br><button onclick="bookAppointment('${loc.name}')">Book Appointment</button>`
+      );
+    });
+
+    // Booking function
+    function bookAppointment(name) {
+      const now = new Date();
+      const timeString = now.toLocaleString();
+      const details = `Your appointment with ${name} has been fixed at ${timeString}.`;
+      document.getElementById('appointmentDetails').textContent = details;
+      document.getElementById('appointmentModal').style.display = 'block';
+    }
+
+    // Close modal function
+    function closeModal() {
+      document.getElementById('appointmentModal').style.display = 'none';
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+      const modal = document.getElementById('appointmentModal');
+      if (event.target == modal) {
+        modal.style.display = 'none';
+      }
+    }
+
+    // Search functionality (basic filter)
+    const searchInput = document.getElementById('searchInput');
+    const searchBtn = document.getElementById('searchBtn');
+
+    searchBtn.addEventListener('click', () => {
+      const query = searchInput.value.toLowerCase();
+      if (!query) {
+        alert('Please enter a search term.');
+        return;
+      }
+      const matched = locations.filter(loc => loc.name.toLowerCase().includes(query) || loc.type.toLowerCase().includes(query));
+      if (matched.length === 0) {
+        alert('No matching hospitals or doctors found.');
+        return;
+      }
+      // Zoom to first matched location
+      const loc = matched[0];
+      map.setView(loc.coords, 15);
+      // Open popup for matched location
+      map.eachLayer(layer => {
+        if (layer.getLatLng && layer.getLatLng().equals(L.latLng(loc.coords))) {
+          layer.openPopup();
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

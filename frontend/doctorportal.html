@@ -1,0 +1,1011 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NeuroVox Doctor Portal</title>
+  <style>
+    :root{
+      --nv-blue:#1068A3;
+      --nv-blue-600:#0E5B8F;
+      --nv-blue-50:#F1F7FC;
+      --nv-gray-900:#1F2933;
+      --nv-gray-700:#3E4C59;
+      --nv-gray-500:#7B8794;
+      --nv-gray-300:#CBD2D9;
+      --nv-gray-200:#E4E7EB;
+      --nv-gray-100:#F5F7FA;
+      --white:#FFFFFF;
+      --danger:#C0392B;
+      --warning:#D68910;
+      --success:#1B9E77;
+      --radius:10px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;height:100%;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--nv-gray-900);background:var(--nv-blue-50)}
+
+    /* Auth wrapper */
+    .auth-wrapper{
+      min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;
+      background:linear-gradient(135deg, rgba(16,104,163,0.08), rgba(16,104,163,0.18));
+    }
+    .login-card{
+      width:100%;max-width:420px;background:var(--white);border-radius:14px;padding:28px;
+      box-shadow:0 10px 30px rgba(16,104,163,0.15), 0 2px 8px rgba(0,0,0,0.05);
+      border:1px solid var(--nv-gray-200);
+    }
+    .brand{
+      display:flex;gap:12px;align-items:center;margin-bottom:18px;
+    }
+    .brand-icon{
+      width:42px;height:42px;border-radius:50%;
+      background: conic-gradient(from 180deg at 50% 50%, #0E5B8F 0deg, #12A2E6 180deg, #0E5B8F 360deg);
+      display:grid;place-items:center;color:#fff;font-weight:700;
+      box-shadow:0 4px 14px rgba(16,104,163,0.35);
+    }
+    .brand h1{font-size:20px;margin:0;color:var(--nv-blue-600)}
+    .muted{color:var(--nv-gray-700);font-size:14px;margin:0 0 14px}
+
+    .form-group{margin-bottom:14px}
+    .form-group label{display:block;font-weight:600;font-size:13px;margin-bottom:6px;color:var(--nv-gray-700)}
+    .input{
+      width:100%;padding:12px 12px;border:1px solid var(--nv-gray-300);border-radius:8px;background:#fff;
+      outline:none;transition:0.2s;
+    }
+    .input:focus{border-color:var(--nv-blue);box-shadow:0 0 0 3px rgba(16,104,163,0.15)}
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:8px;
+      padding:10px 14px;border-radius:8px;border:1px solid transparent;cursor:pointer;
+      background:var(--nv-blue);color:#fff;font-weight:600;transition:0.15s;
+    }
+    .btn:hover{background:#0E5B8F}
+    .btn.secondary{background:#fff;color:var(--nv-blue);border-color:var(--nv-blue)}
+    .btn.danger{background:var(--danger)}
+    .error{color:#fff;background:#D64545;padding:10px;border-radius:8px;margin:10px 0;font-size:14px;display:none}
+    .hint{font-size:12px;color:var(--nv-gray-500)}
+
+    /* App layout */
+    .app{display:none;min-height:100vh}
+    .app-header{
+      height:56px;display:flex;align-items:center;justify-content:space-between;
+      padding:0 16px;background:#fff;border-bottom:1px solid var(--nv-gray-200);position:sticky;top:0;z-index:5;
+    }
+    .app-title{display:flex;align-items:center;gap:10px}
+    .app-title .logo-mini{
+      width:28px;height:28px;border-radius:50%;
+      background:linear-gradient(135deg, #12A2E6, #0E5B8F);box-shadow:0 2px 8px rgba(16,104,163,0.35);
+    }
+    .app-title h2{margin:0;font-size:16px;color:var(--nv-blue-600)}
+    .user-actions{display:flex;align-items:center;gap:8px}
+    .badge{
+      font-size:12px;background:var(--nv-blue-50);color:var(--nv-blue-600);
+      border:1px solid #cfe7f6;padding:6px 8px;border-radius:999px;
+    }
+
+    .app-body{display:flex;min-height:calc(100vh - 56px)}
+    .sidebar{
+      width:260px;background:#fff;border-right:1px solid var(--nv-gray-200);padding:12px;position:sticky;top:56px;height:calc(100vh - 56px);overflow:auto;
+    }
+    .nav{
+      display:flex;flex-direction:column;gap:6px;
+    }
+    .nav button{
+      width:100%;text-align:left;background:#fff;border:1px solid var(--nv-gray-200);color:var(--nv-gray-900);
+      padding:10px 12px;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:10px;
+      transition:0.15s;font-weight:600;font-size:14px;
+    }
+    .nav button:hover{border-color:var(--nv-blue);box-shadow:0 0 0 3px rgba(16,104,163,0.1)}
+    .nav button.active{background:var(--nv-blue-50);border-color:#cfe7f6;color:var(--nv-blue-600)}
+    .section{
+      flex:1;padding:16px;display:none;animation:fade 0.18s ease-in;
+    }
+    .section.active{display:block}
+    @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+    .section h3{margin:0 0 6px;font-size:18px;color:var(--nv-blue-600)}
+    .section p.lead{margin:0 0 14px;color:var(--nv-gray-700)}
+    .toolbar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+
+    .panel{
+      background:#fff;border:1px solid var(--nv-gray-200);border-radius:10px;padding:12px;margin-bottom:12px;
+    }
+    .panel h4{margin:0 0 8px;font-size:15px;color:var(--nv-gray-700)}
+    .row{display:flex;gap:10px;flex-wrap:wrap}
+    .row .form-group{flex:1;min-width:180px}
+
+    table{
+      width:100%;border-collapse:separate;border-spacing:0;background:#fff;border:1px solid var(--nv-gray-200);
+      border-radius:10px;overflow:hidden;font-size:14px;
+    }
+    th,td{padding:10px;border-bottom:1px solid var(--nv-gray-200);text-align:left}
+    thead th{background:var(--nv-blue-50);color:var(--nv-blue-600);font-weight:700}
+    tbody tr:hover{background:#FAFCFF}
+    tbody tr:last-child td{border-bottom:none}
+
+    .tag{
+      display:inline-block;padding:4px 8px;border-radius:999px;font-size:12px;border:1px solid var(--nv-gray-300);color:var(--nv-gray-700);background:#fff;
+    }
+    .tag.red{border-color:#f1b4ae;color:#a33a2a;background:#fff7f6}
+    .tag.green{border-color:#bfe4d9;color:#0d6f57;background:#f3fbf9}
+    .tag.yellow{border-color:#f8ddab;color:#946200;background:#fff9ec}
+
+    .list{display:flex;flex-direction:column;gap:8px}
+    .list-item{
+      background:#fff;border:1px solid var(--nv-gray-200);border-radius:10px;padding:10px;display:flex;justify-content:space-between;align-items:center
+    }
+
+    /* Chat */
+    .chat{
+      display:grid;grid-template-rows:auto 1fr auto;gap:10px;height:60vh;max-height:500px;background:#fff;border:1px solid var(--nv-gray-200);border-radius:10px;padding:10px;
+    }
+    .chat-messages{overflow:auto;display:flex;flex-direction:column;gap:8px;padding-right:4px}
+    .msg{max-width:70%;padding:8px 10px;border-radius:10px;border:1px solid var(--nv-gray-200);background:#f9fbff}
+    .msg.me{align-self:flex-end;background:#e9f4ff;border-color:#cfe7f6}
+    .chat-input{display:flex;gap:8px}
+    .chat-input input{flex:1}
+
+    /* Responsive */
+    @media (max-width: 900px){
+      .sidebar{position:fixed;left:-280px;top:56px;z-index:10;transition:0.2s}
+      .sidebar.open{left:0}
+      .backdrop{content:"";position:fixed;inset:0;background:rgba(0,0,0,0.22);backdrop-filter:saturate(80%) blur(2px);display:none}
+      .backdrop.show{display:block}
+      .app-body{flex-direction:column}
+      .section{padding:12px;margin-top:6px}
+      .nav-toggle{display:inline-flex}
+    }
+    .nav-toggle{display:none;align-items:center;gap:8px}
+  </style>
+</head>
+<body>
+  <!-- Login -->
+  <div id="auth" class="auth-wrapper" aria-live="polite">
+    <div class="login-card" role="dialog" aria-labelledby="loginTitle" aria-describedby="loginDesc">
+      <div class="brand">
+        <div class="brand-icon">N</div>
+        <h1 id="loginTitle">NeuroVox Doctor Portal</h1>
+      </div>
+      <p id="loginDesc" class="muted">Please verify your credentials to continue.</p>
+
+      <div id="loginError" class="error" role="alert">Invalid username or password.</div>
+
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input id="username" class="input" type="text" autocomplete="username" placeholder="e.g., doctor" />
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input id="password" class="input" type="password" autocomplete="current-password" placeholder="e.g., neurovox123" />
+      </div>
+      <div class="form-group">
+        <button id="loginBtn" class="btn" aria-label="Login">Sign in</button>
+      </div>
+      <p class="hint">Use demo credentials — Username: doctor, Password: neurovox123</p>
+    </div>
+  </div>
+
+  <!-- App -->
+  <div id="app" class="app">
+    <header class="app-header">
+      <div class="app-title">
+        <button id="toggleNav" class="btn secondary nav-toggle" aria-label="Toggle navigation">☰</button>
+        <div class="logo-mini" aria-hidden="true"></div>
+        <h2>NeuroVox Doctor Portal</h2>
+        <span class="badge" id="clock"></span>
+      </div>
+      <div class="user-actions">
+        <span id="doctorName" class="badge">Dr. NeuroVox</span>
+        <button id="homeBtn" class="btn secondary">Home</button>
+        <button id="logoutBtn" class="btn danger">Logout</button>
+      </div>
+    </header>
+
+    <div class="app-body">
+      <aside id="sidebar" class="sidebar" aria-label="Sections">
+        <nav class="nav" id="nav">
+          <button data-section="patients" class="active">👤 Patients</button>
+          <button data-section="reports">📈 Daily reports</button>
+          <button data-section="appointments">📅 Appointments</button>
+          <button data-section="prescriptions">💊 Prescriptions</button>
+          <button data-section="alerts">🚨 Emergency alerts</button>
+          <button data-section="messaging">💬 Secure messaging</button>
+          <button data-section="research">🔬 Research data access</button>
+          <button data-section="profile">⚙️ Profile management</button>
+        </nav>
+      </aside>
+      <div id="backdrop" class="backdrop"></div>
+
+      <main id="content" class="section active" data-section="patients" tabindex="-1">
+        <!-- Section content injected here -->
+      </main>
+    </div>
+  </div>
+
+  <script>
+    // Simple SPA state (in-memory for demo)
+    const state = {
+      doctor: { name: "Dr. NeuroVox", email: "doctor@neurovox.example" },
+      patients: [
+        { id: id(), name: "Aarav Patel", age: 32, condition: "Temporal lobe epilepsy" },
+        { id: id(), name: "Isha Sharma", age: 27, condition: "Absence seizures" }
+      ],
+      reports: [], // {id, patientId, type, filename, date}
+      prescriptions: [], // {id, patientId, drug, dosage, notes, date}
+      appointments: [ // {id, patientId, datetime, purpose, notes}
+        { id: id(), patientId: null, datetime: todayAt(10,30), purpose: "Follow-up EEG review", notes: "" }
+      ],
+      alerts: [ // {id, patientId, time, severity, message, acknowledged}
+        { id: id(), patientId: null, time: new Date().toISOString(), severity: "High", message: "Prolonged seizure detected", acknowledged: false }
+      ],
+      messages: { // simple per-contact history
+        "Support Team": [
+          { from:"them", text:"Welcome to NeuroVox secure messaging." , time: timeNow() }
+        ]
+      },
+      contacts: ["Support Team","Dr. Singh","Isha Sharma","Aarav Patel"],
+      research: [
+        { id: id(), title: "Anonymized EEG - Cohort A (EDF)", size: "24 MB", samples: 128, channels: 19, duration: "30 min" },
+        { id: id(), title: "Sleep Stage EEG - Dataset S1 (CSV)", size: "12 MB", samples: 256, channels: 8, duration: "20 min" }
+      ],
+      selectedContact: "Support Team"
+    };
+
+    // Utilities
+    function id(){ return Math.random().toString(36).slice(2,10) }
+    function timeNow(){ const d=new Date(); return d.toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"}) }
+    function formatDateTime(iso){ return new Date(iso).toLocaleString() }
+    function todayAt(h,m){ const d=new Date(); d.setHours(h,m,0,0); return d.toISOString() }
+
+    // Elements
+    const authEl = document.getElementById("auth");
+    const appEl = document.getElementById("app");
+    const loginError = document.getElementById("loginError");
+    const loginBtn = document.getElementById("loginBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+    const userEl = document.getElementById("doctorName");
+    const clockEl = document.getElementById("clock");
+    const contentEl = document.getElementById("content");
+    const sidebarEl = document.getElementById("sidebar");
+    const navEl = document.getElementById("nav");
+    const toggleNavBtn = document.getElementById("toggleNav");
+    const backdrop = document.getElementById("backdrop");
+
+    // Clock
+    setInterval(() => {
+      clockEl.textContent = new Date().toLocaleString();
+    }, 1000);
+
+    // Auth
+    loginBtn.addEventListener("click", () => {
+      const u = document.getElementById("username").value.trim();
+      const p = document.getElementById("password").value;
+      if (u === "doctor" && p === "neurovox123") {
+        loginError.style.display = "none";
+        authEl.style.display = "none";
+        appEl.style.display = "block";
+        userEl.textContent = state.doctor.name;
+        renderSection("patients");
+      } else {
+        loginError.style.display = "block";
+      }
+    });
+
+    logoutBtn.addEventListener("click", () => {
+      appEl.style.display = "none";
+      authEl.style.display = "flex";
+      // Clear inputs and errors
+      document.getElementById("username").value = "";
+      document.getElementById("password").value = "";
+      loginError.style.display = "none";
+    });
+
+    const homeBtn = document.getElementById("homeBtn");
+    homeBtn.addEventListener("click", () => {
+      window.location.href = "index.html";
+    });
+
+    // Nav
+    navEl.addEventListener("click", (e) => {
+      if (e.target.tagName === "BUTTON") {
+        const sec = e.target.getAttribute("data-section");
+        document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
+        e.target.classList.add("active");
+        renderSection(sec);
+        if (window.innerWidth <= 900) closeSidebar();
+      }
+    });
+
+    function openSidebar(){
+      sidebarEl.classList.add("open");
+      backdrop.classList.add("show");
+    }
+    function closeSidebar(){
+      sidebarEl.classList.remove("open");
+      backdrop.classList.remove("show");
+    }
+
+    toggleNavBtn.addEventListener("click", openSidebar);
+    backdrop.addEventListener("click", closeSidebar);
+
+    // Section renderers
+    const renderers = {
+      patients(){
+        contentEl.innerHTML = `
+          <h3>Patient management</h3>
+          <p class="lead">View, add, and manage patient records.</p>
+
+          <div class="panel">
+            <h4>Add patient</h4>
+            <div class="row">
+              <div class="form-group">
+                <label for="pName">Name</label>
+                <input id="pName" class="input" placeholder="Full name" />
+              </div>
+              <div class="form-group">
+                <label for="pAge">Age</label>
+                <input id="pAge" type="number" min="0" class="input" placeholder="Age" />
+              </div>
+              <div class="form-group" style="flex:2">
+                <label for="pCond">Condition</label>
+                <input id="pCond" class="input" placeholder="Primary condition" />
+              </div>
+              <div class="form-group" style="align-self:end">
+                <button class="btn" id="addPatient">Add patient</button>
+              </div>
+            </div>
+          </div>
+
+          <table aria-label="Patients table">
+            <thead><tr><th>Name</th><th>Age</th><th>Condition</th><th>Actions</th></tr></thead>
+            <tbody id="patientRows">
+              ${state.patients.map(p=>`
+                <tr data-id="${p.id}">
+                  <td>${escapeHTML(p.name)}</td>
+                  <td>${p.age}</td>
+                  <td>${escapeHTML(p.condition)}</td>
+                  <td>
+                    <button class="btn secondary btn-edit">Edit</button>
+                    <button class="btn danger btn-del">Delete</button>
+                  </td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        `;
+
+        document.getElementById("addPatient").addEventListener("click", () => {
+          const name = document.getElementById("pName").value.trim();
+          const age = parseInt(document.getElementById("pAge").value, 10);
+          const cond = document.getElementById("pCond").value.trim();
+          if(!name || isNaN(age) || !cond) return alert("Please fill all fields.");
+          state.patients.push({ id:id(), name, age, condition:cond });
+          renderSection("patients");
+        });
+
+        document.getElementById("patientRows").addEventListener("click", (e)=>{
+          const tr = e.target.closest("tr"); if(!tr) return;
+          const pid = tr.getAttribute("data-id");
+          if (e.target.classList.contains("btn-del")){
+            if(confirm("Delete this patient?")){
+              state.patients = state.patients.filter(p=>p.id!==pid);
+              renderSection("patients");
+            }
+          } else if (e.target.classList.contains("btn-edit")){
+            const p = state.patients.find(p=>p.id===pid);
+            const name = prompt("Name", p.name) ?? p.name;
+            const age = parseInt(prompt("Age", p.age) ?? p.age, 10);
+            const cond = prompt("Condition", p.condition) ?? p.condition;
+            if(name && !isNaN(age) && cond){
+              p.name = name; p.age = age; p.condition = cond;
+              renderSection("patients");
+            }
+          }
+        });
+      },
+
+      reports(){
+        contentEl.innerHTML = `
+          <h3>Daily reports</h3>
+          <p class="lead">Upload and view EEG and health reports.</p>
+
+          <div class="panel">
+            <h4>Upload report</h4>
+            <div class="row">
+              <div class="form-group">
+                <label for="rPatient">Patient</label>
+                <select id="rPatient" class="input">
+                  ${optionsForPatients()}
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="rType">Type</label>
+                <select id="rType" class="input">
+                  <option>EEG</option>
+                  <option>Health</option>
+                  <option>Other</option>
+                </select>
+              </div>
+              <div class="form-group" style="flex:2">
+                <label for="rFile">File</label>
+                <input id="rFile" type="file" class="input" />
+              </div>
+              <div class="form-group" style="align-self:end">
+                <button id="uploadReport" class="btn">Upload</button>
+              </div>
+            </div>
+            <p class="hint">This demo stores only the file name locally (no real upload).</p>
+          </div>
+
+          <table aria-label="Reports table">
+            <thead><tr><th>Date</th><th>Patient</th><th>Type</th><th>File</th><th>Actions</th></tr></thead>
+            <tbody id="reportRows">
+              ${state.reports.map(r=>{
+                const patientName = patientNameById(r.patientId) || "—";
+                return `
+                  <tr data-id="${r.id}">
+                    <td>${formatDateTime(r.date)}</td>
+                    <td>${escapeHTML(patientName)}</td>
+                    <td>${escapeHTML(r.type)}</td>
+                    <td>${escapeHTML(r.filename)}</td>
+                    <td>
+                      <button class="btn secondary btn-view">View</button>
+                      <button class="btn danger btn-del">Delete</button>
+                    </td>
+                  </tr>
+                `
+              }).join("")}
+            </tbody>
+          </table>
+        `;
+
+        document.getElementById("uploadReport").addEventListener("click", ()=>{
+          const patientId = document.getElementById("rPatient").value || null;
+          const type = document.getElementById("rType").value;
+          const file = document.getElementById("rFile").files[0];
+          if(!file){ return alert("Choose a file to upload."); }
+          state.reports.unshift({
+            id: id(), patientId, type, filename: file.name, date: new Date().toISOString()
+          });
+          renderSection("reports");
+        });
+
+        document.getElementById("reportRows").addEventListener("click",(e)=>{
+          const tr = e.target.closest("tr"); if(!tr) return;
+          const rid = tr.getAttribute("data-id");
+          if (e.target.classList.contains("btn-del")){
+            state.reports = state.reports.filter(r=>r.id!==rid);
+            renderSection("reports");
+          } else if (e.target.classList.contains("btn-view")){
+            const r = state.reports.find(r=>r.id===rid);
+            alert(`Report: ${r.type}\nPatient: ${patientNameById(r.patientId) || "—"}\nFile: ${r.filename}\nDate: ${formatDateTime(r.date)}`);
+          }
+        });
+      },
+
+      appointments(){
+        contentEl.innerHTML = `
+          <h3>Appointments</h3>
+          <p class="lead">Schedule and manage appointments.</p>
+
+          <div class="panel">
+            <h4>Schedule appointment</h4>
+            <div class="row">
+              <div class="form-group">
+                <label for="aPatient">Patient</label>
+                <select id="aPatient" class="input">
+                  <option value="">— Unassigned —</option>
+                  ${optionsForPatients()}
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="aDateTime">Date & time</label>
+                <input id="aDateTime" type="datetime-local" class="input" />
+              </div>
+              <div class="form-group">
+                <label for="aPurpose">Purpose</label>
+                <input id="aPurpose" class="input" placeholder="Purpose" />
+              </div>
+              <div class="form-group" style="flex:2">
+                <label for="aNotes">Notes</label>
+                <input id="aNotes" class="input" placeholder="Notes (optional)" />
+              </div>
+              <div class="form-group" style="align-self:end">
+                <button id="addAppt" class="btn">Add</button>
+              </div>
+            </div>
+          </div>
+
+          <table aria-label="Appointments table">
+            <thead><tr><th>Date</th><th>Patient</th><th>Purpose</th><th>Notes</th><th>Actions</th></tr></thead>
+            <tbody id="apptRows">
+              ${state.appointments.map(a=>{
+                return `
+                  <tr data-id="${a.id}">
+                    <td>${formatDateTime(a.datetime)}</td>
+                    <td>${escapeHTML(patientNameById(a.patientId) || "—")}</td>
+                    <td>${escapeHTML(a.purpose || "—")}</td>
+                    <td>${escapeHTML(a.notes || "—")}</td>
+                    <td>
+                      <button class="btn secondary btn-edit">Edit</button>
+                      <button class="btn danger btn-del">Delete</button>
+                    </td>
+                  </tr>
+                `
+              }).join("")}
+            </tbody>
+          </table>
+        `;
+
+        document.getElementById("addAppt").addEventListener("click", ()=>{
+          const patientId = document.getElementById("aPatient").value || null;
+          const dt = document.getElementById("aDateTime").value;
+          const purpose = document.getElementById("aPurpose").value.trim();
+          const notes = document.getElementById("aNotes").value.trim();
+          if(!dt) return alert("Please choose date and time.");
+          state.appointments.unshift({ id:id(), patientId, datetime:new Date(dt).toISOString(), purpose, notes });
+          renderSection("appointments");
+        });
+
+        document.getElementById("apptRows").addEventListener("click",(e)=>{
+          const tr = e.target.closest("tr"); if(!tr) return;
+          const idd = tr.getAttribute("data-id");
+          if (e.target.classList.contains("btn-del")){
+            state.appointments = state.appointments.filter(a=>a.id!==idd);
+            renderSection("appointments");
+          } else if (e.target.classList.contains("btn-edit")){
+            const a = state.appointments.find(a=>a.id===idd);
+            const purpose = prompt("Purpose", a.purpose || "") ?? a.purpose;
+            const notes = prompt("Notes", a.notes || "") ?? a.notes;
+            a.purpose = purpose; a.notes = notes;
+            renderSection("appointments");
+          }
+        });
+      },
+
+      prescriptions(){
+        contentEl.innerHTML = `
+          <h3>Prescriptions</h3>
+          <p class="lead">Upload or log prescriptions and track dosing notes.</p>
+
+          <div class="panel">
+            <h4>New prescription</h4>
+            <div class="row">
+              <div class="form-group">
+                <label for="prPatient">Patient</label>
+                <select id="prPatient" class="input">
+                  ${optionsForPatients()}
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="prDrug">Drug</label>
+                <input id="prDrug" class="input" placeholder="Medication name" />
+              </div>
+              <div class="form-group">
+                <label for="prDosage">Dosage</label>
+                <input id="prDosage" class="input" placeholder="e.g., 200 mg BID" />
+              </div>
+              <div class="form-group" style="flex:2">
+                <label for="prNotes">Notes</label>
+                <input id="prNotes" class="input" placeholder="Special instructions" />
+              </div>
+              <div class="form-group" style="align-self:end">
+                <button id="addRx" class="btn">Add</button>
+              </div>
+            </div>
+          </div>
+
+          <table aria-label="Prescriptions table">
+            <thead><tr><th>Date</th><th>Patient</th><th>Drug</th><th>Dosage</th><th>Notes</th><th>Actions</th></tr></thead>
+            <tbody id="rxRows">
+              ${state.prescriptions.map(r=>`
+                <tr data-id="${r.id}">
+                  <td>${formatDateTime(r.date)}</td>
+                  <td>${escapeHTML(patientNameById(r.patientId) || "—")}</td>
+                  <td>${escapeHTML(r.drug)}</td>
+                  <td>${escapeHTML(r.dosage)}</td>
+                  <td>${escapeHTML(r.notes || "—")}</td>
+                  <td><button class="btn danger btn-del">Delete</button></td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        `;
+
+        document.getElementById("addRx").addEventListener("click", ()=>{
+          const patientId = document.getElementById("prPatient").value || null;
+          const drug = document.getElementById("prDrug").value.trim();
+          const dosage = document.getElementById("prDosage").value.trim();
+          const notes = document.getElementById("prNotes").value.trim();
+          if(!patientId || !drug || !dosage) return alert("Please fill patient, drug, and dosage.");
+          state.prescriptions.unshift({ id:id(), patientId, drug, dosage, notes, date:new Date().toISOString() });
+          renderSection("prescriptions");
+        });
+
+        document.getElementById("rxRows").addEventListener("click",(e)=>{
+          const tr = e.target.closest("tr"); if(!tr) return;
+          const rid = tr.getAttribute("data-id");
+          if (e.target.classList.contains("btn-del")){
+            state.prescriptions = state.prescriptions.filter(r=>r.id!==rid);
+            renderSection("prescriptions");
+          }
+        });
+      },
+
+      alerts(){
+        contentEl.innerHTML = `
+          <h3>Emergency alerts</h3>
+          <p class="lead">Monitor and respond to patient alerts.</p>
+
+          <div class="list" id="alertList">
+            ${state.alerts.length === 0 ? `<div class="panel">No active alerts.</div>` : state.alerts.map(a=>`
+              <div class="list-item" data-id="${a.id}">
+                <div>
+                  <div><strong>${escapeHTML(a.message)}</strong></div>
+                  <div class="hint">Time: ${formatDateTime(a.time)} · Patient: ${escapeHTML(patientNameById(a.patientId) || "—")}</div>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px">
+                  <span class="tag ${a.severity === "High" ? "red" : a.severity === "Medium" ? "yellow" : "green"}">${a.severity}</span>
+                  ${a.acknowledged ? `<span class="tag green">Acknowledged</span>` : `<button class="btn secondary btn-ack">Acknowledge</button>`}
+                  <button class="btn danger btn-clear">Clear</button>
+                </div>
+              </div>
+            `).join("")}
+          </div>
+
+          <div class="panel" style="margin-top:12px">
+            <h4>Simulate alert</h4>
+            <div class="row">
+              <div class="form-group">
+                <label for="alPatient">Patient</label>
+                <select id="alPatient" class="input">
+                  <option value="">— Unknown —</option>
+                  ${optionsForPatients()}
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="alSeverity">Severity</label>
+                <select id="alSeverity" class="input">
+                  <option>High</option>
+                  <option>Medium</option>
+                  <option>Low</option>
+                </select>
+              </div>
+              <div class="form-group" style="flex:2">
+                <label for="alMsg">Message</label>
+                <input id="alMsg" class="input" placeholder="Alert message" />
+              </div>
+              <div class="form-group" style="align-self:end">
+                <button id="addAlert" class="btn">Trigger</button>
+              </div>
+            </div>
+          </div>
+        `;
+
+        document.getElementById("alertList").addEventListener("click",(e)=>{
+          const item = e.target.closest(".list-item"); if(!item) return;
+          const aid = item.getAttribute("data-id");
+          const a = state.alerts.find(x=>x.id===aid);
+          if (e.target.classList.contains("btn-ack")){
+            a.acknowledged = true; renderSection("alerts");
+          } else if (e.target.classList.contains("btn-clear")){
+            state.alerts = state.alerts.filter(x=>x.id!==aid); renderSection("alerts");
+          }
+        });
+
+        document.getElementById("addAlert").addEventListener("click", ()=>{
+          const patientId = document.getElementById("alPatient").value || null;
+          const severity = document.getElementById("alSeverity").value;
+          const message = (document.getElementById("alMsg").value || "Unknown alert").trim();
+          state.alerts.unshift({ id:id(), patientId, time:new Date().toISOString(), severity, message, acknowledged:false });
+          renderSection("alerts");
+        });
+      },
+
+      messaging(){
+        const contact = state.selectedContact || state.contacts[0];
+        const suggestions = {
+          "Support Team": [
+            "How do I reset my password?",
+            "I'm having trouble logging in",
+            "Can you help with a bug?",
+            "What new features are coming?",
+            "How do I contact support?"
+          ],
+          "Dr. Singh": [
+            "When is my next appointment?",
+            "Can you review my latest EEG report?",
+            "I'm experiencing new symptoms",
+            "Do I need to change my medication?",
+            "Can we schedule a follow-up?"
+          ],
+          "Isha Sharma": [
+            "How are you feeling today?",
+            "Any updates on your symptoms?",
+            "How is the medication working?",
+            "Are you getting enough sleep?",
+            "Do you have any concerns?"
+          ],
+          "Aarav Patel": [
+            "How are you feeling today?",
+            "Any updates on your symptoms?",
+            "How is the medication working?",
+            "Are you getting enough sleep?",
+            "Do you have any concerns?"
+          ]
+        };
+        contentEl.innerHTML = `
+          <h3>Secure messaging</h3>
+          <p class="lead">Message patients or doctors in a private channel.</p>
+
+          <div class="row">
+            <div class="panel" style="min-width:220px;flex:0.3">
+              <h4>Contacts</h4>
+              <div class="list" id="contactList">
+                ${state.contacts.map(c=>`
+                  <button class="btn ${c===contact?"":"secondary"} contact-btn" data-contact="${escapeAttr(c)}">${escapeHTML(c)}</button>
+                `).join("")}
+              </div>
+            </div>
+
+            <div style="flex:1.7;display:flex;flex-direction:column;gap:10px">
+              <div class="chat">
+                <div class="panel" style="margin:0;padding:8px;display:flex;justify-content:space-between;align-items:center">
+                  <h4 style="margin:0">${escapeHTML(contact)}</h4>
+                  <span class="tag">Secure</span>
+                </div>
+                <div id="chatMessages" class="chat-messages" aria-live="polite">
+                  ${(state.messages[contact] || []).map(m=>`
+                    <div class="msg ${m.from==="me"?"me":""}">
+                      <div>${escapeHTML(m.text)}</div>
+                      <div class="hint" style="margin-top:4px">${m.time}</div>
+                    </div>
+                  `).join("")}
+                </div>
+                <div class="chat-input">
+                  <input id="chatInput" class="input" placeholder="Type a message..." />
+                  <button id="sendMsg" class="btn">Send</button>
+                </div>
+              </div>
+
+              <div class="panel">
+                <h4>Suggested questions for ${escapeHTML(contact)}</h4>
+                <p class="hint">Click on a question to send it, or use it as inspiration for your message.</p>
+                <div class="list" id="suggestionsList">
+                  ${(suggestions[contact] || []).map(q=>`
+                    <button class="btn secondary suggestion-btn" data-question="${escapeAttr(q)}">${escapeHTML(q)}</button>
+                  `).join("")}
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+
+        document.getElementById("contactList").addEventListener("click",(e)=>{
+          const btn = e.target.closest(".contact-btn"); if(!btn) return;
+          state.selectedContact = btn.getAttribute("data-contact");
+          renderSection("messaging");
+        });
+
+        document.getElementById("suggestionsList").addEventListener("click", (e) => {
+          const btn = e.target.closest(".suggestion-btn");
+          if (!btn) return;
+          const question = btn.getAttribute("data-question");
+          document.getElementById("chatInput").value = question;
+          document.getElementById("chatInput").focus();
+        });
+
+        document.getElementById("sendMsg").addEventListener("click", send);
+        document.getElementById("chatInput").addEventListener("keydown", (e)=>{ if(e.key==="Enter") send() });
+
+        function send(){
+          const text = document.getElementById("chatInput").value.trim();
+          if(!text) return;
+          const c = state.selectedContact;
+          state.messages[c] = state.messages[c] || [];
+          state.messages[c].push({ from:"me", text, time: timeNow() });
+          document.getElementById("chatInput").value = "";
+          renderSection("messaging");
+
+          // Generate bot response after a delay
+          setTimeout(() => {
+            const botResponse = generateBotResponse(c, text);
+            state.messages[c].push({ from:"them", text: botResponse, time: timeNow() });
+            renderSection("messaging");
+          }, 1000 + Math.random() * 2000); // Random delay 1-3 seconds
+        }
+
+        function generateBotResponse(contact, userMessage){
+          const msg = userMessage.toLowerCase();
+          if (contact === "Support Team") {
+            if (msg.includes("help") || msg.includes("support")) {
+              return "I'm here to help! How can I assist you with NeuroVox today?";
+            } else if (msg.includes("bug") || msg.includes("issue") || msg.includes("error")) {
+              return "Sorry to hear that. Please describe the issue in detail, and we'll investigate immediately.";
+            } else if (msg.includes("feature") || msg.includes("update") || msg.includes("new")) {
+              return "We're always improving! What feature would you like to see added to NeuroVox?";
+            } else if (msg.includes("hello") || msg.includes("hi") || msg.includes("hey")) {
+              return "Hello! Welcome to NeuroVox support. How can I assist you today?";
+            } else if (msg.includes("login") || msg.includes("password") || msg.includes("account")) {
+              return "For account issues, please ensure you're using the correct credentials. If forgotten, use the reset option.";
+            } else if (msg.includes("tutorial") || msg.includes("guide") || msg.includes("how to")) {
+              return "Check our user guide in the portal. If you need specific help, let me know!";
+            } else if (msg.includes("contact") || msg.includes("phone") || msg.includes("email")) {
+              return "You can reach us at support@neurovox.example or call our helpline.";
+            } else if (msg.includes("thank")) {
+              return "You're welcome! Is there anything else I can help you with?";
+            } else {
+              return "Thank you for your message. Our support team will respond shortly with more details.";
+            }
+          } else if (contact === "Dr. Singh") {
+            if (msg.includes("patient") || msg.includes("aarav") || msg.includes("isha")) {
+              return "I'll review the patient's records and get back to you with my assessment.";
+            } else if (msg.includes("appointment") || msg.includes("schedule") || msg.includes("meeting")) {
+              return "Let's coordinate the appointment. What time works best for you?";
+            } else if (msg.includes("report") || msg.includes("eeg") || msg.includes("results")) {
+              return "The latest EEG report looks stable. Any specific concerns you'd like to discuss?";
+            } else if (msg.includes("medication") || msg.includes("prescription") || msg.includes("drug")) {
+              return "Regarding medication, I'll review the current regimen and advise accordingly.";
+            } else if (msg.includes("symptoms") || msg.includes("condition") || msg.includes("health")) {
+              return "Please provide more details about the symptoms for better assessment.";
+            } else if (msg.includes("emergency") || msg.includes("urgent")) {
+              return "For emergencies, please contact the hospital directly at the emergency line.";
+            } else if (msg.includes("follow up") || msg.includes("check up")) {
+              return "I'll schedule a follow-up appointment. What date would work for you?";
+            } else {
+              return "Understood. I'll follow up on this matter and get back to you soon.";
+            }
+          } else if (contact === "Isha Sharma" || contact === "Aarav Patel") {
+            if (msg.includes("how are you") || msg.includes("feeling") || msg.includes("better")) {
+              return "I'm doing better, thanks for asking. The medication is helping with my symptoms.";
+            } else if (msg.includes("appointment") || msg.includes("visit") || msg.includes("see you")) {
+              return "Looking forward to the next appointment. Do you have any updates for me?";
+            } else if (msg.includes("symptoms") || msg.includes("seizure") || msg.includes("episode")) {
+              return "I've been seizure-free for a week now. Fingers crossed it continues!";
+            } else if (msg.includes("medication") || msg.includes("pills") || msg.includes("taking")) {
+              return "I'm taking the medication as prescribed. Any side effects to watch for?";
+            } else if (msg.includes("diet") || msg.includes("exercise") || msg.includes("lifestyle")) {
+              return "I've been trying to maintain a healthy diet and exercise routine.";
+            } else if (msg.includes("sleep") || msg.includes("rest")) {
+              return "My sleep has been better lately. No issues with insomnia.";
+            } else if (msg.includes("stress") || msg.includes("anxiety")) {
+              return "I've been managing stress through meditation. It's helping a lot.";
+            } else if (msg.includes("thank")) {
+              return "Thank you for your care and support. It means a lot.";
+            } else {
+              return "Thanks for checking in. Everything is going well on my end.";
+            }
+          } else {
+            return "Message received. I'll respond as soon as possible with more information.";
+          }
+        }
+      },
+
+      research(){
+        contentEl.innerHTML = `
+          <h3>Research data access</h3>
+          <p class="lead">Browse anonymized EEG datasets for analysis and research.</p>
+
+          <table aria-label="Research datasets">
+            <thead><tr><th>Dataset</th><th>Channels</th><th>Sample rate</th><th>Duration</th><th>Size</th><th>Action</th></tr></thead>
+            <tbody id="dsRows">
+              ${state.research.map(d=>`
+                <tr data-id="${d.id}">
+                  <td>${escapeHTML(d.title)}</td>
+                  <td>${d.channels}</td>
+                  <td>${d.samples} Hz</td>
+                  <td>${escapeHTML(d.duration)}</td>
+                  <td>${d.size}</td>
+                  <td><button class="btn secondary btn-info">Details</button> <button class="btn btn-req">Request access</button></td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+          <p class="hint">Access requests are simulated in this demo.</p>
+        `;
+
+        document.getElementById("dsRows").addEventListener("click",(e)=>{
+          const tr = e.target.closest("tr"); if(!tr) return;
+          const did = tr.getAttribute("data-id");
+          const d = state.research.find(x=>x.id===did);
+          if (e.target.classList.contains("btn-info")){
+            alert(`Dataset: ${d.title}\nChannels: ${d.channels}\nSample rate: ${d.samples} Hz\nDuration: ${d.duration}\nSize: ${d.size}`);
+          } else if (e.target.classList.contains("btn-req")){
+            alert("Access requested. You will be notified upon approval (demo).");
+          }
+        });
+      },
+
+      profile(){
+        contentEl.innerHTML = `
+          <h3>Profile management</h3>
+          <p class="lead">Update your details and security settings.</p>
+
+          <div class="panel">
+            <h4>Doctor details</h4>
+            <div class="row">
+              <div class="form-group">
+                <label for="dName">Display name</label>
+                <input id="dName" class="input" value="${escapeAttr(state.doctor.name)}" />
+              </div>
+              <div class="form-group">
+                <label for="dEmail">Email</label>
+                <input id="dEmail" class="input" type="email" value="${escapeAttr(state.doctor.email)}" />
+              </div>
+              <div class="form-group">
+                <label for="dPwd">New password</label>
+                <input id="dPwd" class="input" type="password" placeholder="Leave blank to keep current" />
+              </div>
+              <div class="form-group" style="align-self:end">
+                <button id="saveProfile" class="btn">Save</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <h4>Security</h4>
+            <div class="row">
+              <div class="form-group" style="flex:1">
+                <label>Two-factor authentication</label>
+                <button id="toggle2FA" class="btn secondary">Enable 2FA</button>
+                <p class="hint">Demo only — no real verification here.</p>
+              </div>
+              <div class="form-group" style="flex:1">
+                <label>Active session</label>
+                <div class="tag">This device · ${new Date().toLocaleString()}</div>
+              </div>
+            </div>
+          </div>
+        `;
+
+        document.getElementById("saveProfile").addEventListener("click", ()=>{
+          const name = document.getElementById("dName").value.trim();
+          const email = document.getElementById("dEmail").value.trim();
+          state.doctor.name = name || state.doctor.name;
+          state.doctor.email = email || state.doctor.email;
+          userEl.textContent = state.doctor.name;
+          alert("Profile updated.");
+        });
+        document.getElementById("toggle2FA").addEventListener("click", ()=>alert("2FA toggled (demo)."));
+      }
+    };
+
+    // SPA render orchestrator
+    function renderSection(key){
+      const r = renderers[key];
+      if(!r) return;
+      contentEl.classList.remove("active");
+      // Minimal delay for small fade animation
+      setTimeout(()=>{
+        contentEl.setAttribute("data-section", key);
+        r();
+        contentEl.classList.add("active");
+        contentEl.focus({ preventScroll:true });
+      }, 50);
+    }
+
+    // Helpers
+    function optionsForPatients(){
+      return state.patients.map(p=>`<option value="${p.id}">${escapeHTML(p.name)}</option>`).join("");
+    }
+    function patientNameById(id){
+      if (!id) return null;
+      const p = state.patients.find(p=>p.id===id);
+      return p ? p.name : null;
+    }
+    function escapeHTML(str){
+      return String(str).replace(/[&<>"']/g, s=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[s]));
+    }
+    function escapeAttr(str){ return escapeHTML(str).replace(/"/g,"&quot;") }
+
+    // Keyboard accessibility
+    document.addEventListener("keydown",(e)=>{
+      if (e.key === "Escape" && sidebarEl.classList.contains("open")) closeSidebar();
+    });
+
+    // Initial section content (for progressive enhancement if needed)
+    renderSection("patients");
+  </script>
+</body>
+</html>

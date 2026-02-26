@@ -1,0 +1,486 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>NeuroVox Recovery Companion</title>
+<style>
+  :root{
+    --bg:#0f1115; --card:#171923; --muted:#a3b3c2; --text:#e6eef6; --accent:#00e0ff; --accent-2:#7cffb2; --danger:#ff6b6b;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family: Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    background:linear-gradient(180deg,#0a0c10 0%, #0f1115 100%); color:var(--text);
+  }
+  header, footer{padding:16px 20px; background:#0a0c10; border-bottom:1px solid #1d2130}
+  header h1{margin:0; font-weight:800; letter-spacing:0.3px}
+  header p{margin:6px 0 0; color:var(--muted)}
+  main{padding:20px; display:grid; gap:20px; grid-template-columns: 1.3fr 1fr}
+  @media (max-width: 1024px){ main{grid-template-columns: 1fr} }
+  .card{
+    background:linear-gradient(180deg,#151826, #121522); border:1px solid #22263a; border-radius:16px; padding:16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.25);
+  }
+  h2{margin:0 0 14px; color:var(--accent)}
+  .row{display:grid; gap:20px; grid-template-columns: repeat(2,1fr)}
+  @media (max-width:800px){.row{grid-template-columns:1fr}}
+  /* Dashboard */
+  .kpis{display:grid; grid-template-columns: repeat(3,1fr); gap:10px; margin-top:12px}
+  .kpi{background:#14182a; border:1px solid #22263a; border-radius:12px; padding:10px}
+  .kpi small{color:var(--muted)}
+  .kpi strong{font-size:1.2rem}
+  .goal{margin-top:12px}
+  progress{width:100%; height:16px; -webkit-appearance:none; appearance:none}
+  progress::-webkit-progress-bar{background:#0f1324; border-radius:10px}
+  progress::-webkit-progress-value{background:linear-gradient(90deg,var(--accent),#5ef3ff); border-radius:10px}
+  canvas#lineChart{width:100%; height:160px; display:block; background: #0f1324; border-radius:10px}
+  /* Avatar */
+  #avatar-shell{display:flex; align-items:center; gap:16px}
+  #avatar{
+    width:160px; height:160px; border-radius:50%; background: radial-gradient(120px 120px at 50% 40%, #1f2240, #121527);
+    border:2px solid #2b3157; position:relative; box-shadow: 0 10px 40px rgba(0, 224, 255, .15);
+    animation: breathe 5s ease-in-out infinite;
+  }
+  @keyframes breathe {0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+  .eye{
+    width:18px; height:18px; background:#dff6ff; border-radius:50%; position:absolute; top:54px; box-shadow:0 0 10px rgba(0,224,255,.5) inset;
+  }
+  .eye::after{content:''; position:absolute; width:8px; height:8px; background:#0b0f1a; border-radius:50%; left:5px; top:5px}
+  .eye.left{left:48px} .eye.right{right:48px}
+  .blink{animation: blink 6s infinite}
+  @keyframes blink{0%,92%,100%{transform:scaleY(1)}94%{transform:scaleY(0.1)}96%{transform:scaleY(1)}}
+  .mouth{
+    position:absolute; left:50%; transform:translateX(-50%); bottom:42px; width:46px; height:10px; background:#0a0f1a; border-radius:0 0 24px 24px;
+    border-top:2px solid #2b3157; overflow:hidden; transition: height .15s;
+  }
+  .mouth.speaking{height:26px; background:linear-gradient(#a83258,#6d163a)}
+  .mood{display:inline-flex; align-items:center; gap:8px; padding:6px 10px; border:1px solid #243050; border-radius:999px; background:#12162a; color:var(--muted)}
+  .talk{display:flex; gap:8px; flex-wrap:wrap}
+  button{
+    background: linear-gradient(180deg, var(--accent), #00bbd4); color:#00141a; border:none; padding:10px 14px; border-radius:10px; font-weight:700; cursor:pointer;
+    box-shadow: 0 6px 18px rgba(0,224,255,.25); transition: transform .06s ease;
+  }
+  button:hover{transform: translateY(-1px)}
+  button.secondary{background:#1a2040; color:#cfe8ff; border:1px solid #2b3157; box-shadow:none}
+  /* Mind log */
+  textarea{width:100%; min-height:90px; border:none; border-radius:10px; background:#0f1426; color:#eaf6ff; padding:12px}
+  .logs{max-height:200px; overflow:auto; display:grid; gap:8px; margin-top:10px}
+  .log{background:#0f1426; border:1px solid #1f2744; border-radius:10px; padding:10px}
+  .log small{color:var(--muted)}
+  /* Exercises */
+  .exercise-grid{display:grid; gap:12px; grid-template-columns: repeat(2,1fr)}
+  .exercise{background:#151b34; border:1px solid #223057; border-radius:12px; padding:12px}
+  .exercise h3{margin:0 0 8px; color:#7fd3ff}
+  .pill{display:inline-block; background:#11213a; border:1px solid #27436a; color:#a8d9ff; padding:4px 8px; border-radius:999px; font-size:12px}
+  .motivation{background:linear-gradient(90deg,#102039,#0d1c33); border:1px solid #1e3a66; border-radius:12px; padding:12px; color:#cfe8ff}
+  /* Breathing widget */
+  #breath{
+    margin-top:12px; width:100%; height:180px; display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden;
+    background: radial-gradient(200px 120px at 50% 100%, rgba(0,224,255,.06), rgba(0,0,0,0));
+    border-radius:12px; border:1px solid #1a2b45;
+  }
+  #orb{
+    width:80px; height:80px; border-radius:50%; background:radial-gradient(closest-side, rgba(0,224,255,.9), rgba(0,224,255,.2));
+    box-shadow: 0 0 40px rgba(0,224,255,.4), 0 0 90px rgba(0,224,255,.2);
+  }
+  /* Memory game */
+  #memory{display:grid; grid-template-columns: repeat(4, 1fr); gap:10px; margin-top:10px}
+  .card-cell{
+    aspect-ratio:1/1; background:#0f1426; border:1px dashed #2a3a63; border-radius:10px; display:flex; align-items:center; justify-content:center;
+    font-size:28px; cursor:pointer; transition:transform .08s; user-select:none;
+  }
+  .card-cell.revealed{background:#17224a; border-style:solid}
+  .card-cell.matched{background:#0d2330; border:1px solid #2d6a52; color:#7cffb2}
+  .flex{display:flex; align-items:center; justify-content:space-between; gap:10px}
+  .muted{color:var(--muted)}
+  .sr{position:absolute; left:-10000px}
+</style>
+</head>
+<body>
+<header>
+  <h1>🧠 NeuroVox Recovery Companion</h1>
+  <p>Emotion-aware guidance, daily progress, and engaging exercises to speed up recovery.</p>
+</header>
+
+<main>
+  <!-- Left column -->
+  <section class="card">
+    <h2>Recovery dashboard</h2>
+    <canvas id="lineChart" aria-label="Daily progress chart"></canvas>
+    <div class="kpis">
+      <div class="kpi"><small>Focus score</small><div><strong id="kpiFocus">68</strong></div></div>
+      <div class="kpi"><small>Mood trend</small><div><strong id="kpiMood">🙂 Stable</strong></div></div>
+      <div class="kpi"><small>Streak</small><div><strong id="kpiStreak">0 days</strong></div></div>
+    </div>
+    <div class="goal">
+      <div class="flex">
+        <div class="muted">🎯 Goal: Complete 3 focus sessions today</div>
+        <div id="goalCount" class="muted">0/3</div>
+      </div>
+      <progress id="goalProgress" value="0" max="3"></progress>
+    </div>
+  </section>
+
+  <!-- Right column -->
+  <section class="card">
+    <h2>NeuroVox companion</h2>
+    <div id="avatar-shell">
+      <div id="avatar" aria-label="AI avatar">
+        <div class="eye left blink"></div>
+        <div class="eye right blink"></div>
+        <div id="mouth" class="mouth"></div>
+      </div>
+      <div style="flex:1">
+    <div class="flex" style="gap:8px; flex-wrap:wrap">
+      <span class="mood" id="moodTag">Mood: balanced</span>
+      <span class="mood">Voice: calm</span>
+      <button id="btnEnglish" class="secondary" style="background:#00e0ff; color:#00141a;">English</button>
+      <button id="btnHindi" class="secondary">Hindi</button>
+    </div>
+    <p id="botLine" class="muted" style="margin:10px 0 14px">Hi, I’m here with you. Ready for a gentle start?</p>
+    <div class="talk">
+      <button id="btnSpeak">💬 Talk to me</button>
+      <button id="btnEncourage" class="secondary">✨ Encourage me</button>
+      <button id="btnExercise" class="secondary">🧘 Start breathing</button>
+      <button id="btnStopTalking" class="secondary" style="background:#ff6b6b; color:#fff;">🛑 Stop Talking</button>
+      <button id="btnHome" class="secondary">🏠 Go to Home Page</button>
+    </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mind log -->
+  <section class="card">
+    <h2>Mind log</h2>
+    <textarea id="logInput" placeholder="How are you feeling today? Share a few words."></textarea>
+    <div class="flex" style="margin-top:10px">
+      <button id="saveLog">Save entry</button>
+      <span class="muted">Entries are saved on your device.</span>
+    </div>
+    <div id="logList" class="logs" aria-live="polite"></div>
+  </section>
+
+  <!-- Exercises + motivation -->
+  <section class="card">
+    <h2>Exercises and motivation</h2>
+    <div class="row">
+      <div class="exercise">
+        <h3>Guided breathing <span class="pill">Box 4-4-4</span></h3>
+        <div id="breath">
+          <div id="orb" aria-hidden="true"></div>
+          <div class="sr" id="breathSr">Breathing guidance</div>
+        </div>
+        <div class="flex" style="margin-top:10px">
+          <button id="startBreath">Start</button>
+          <button id="stopBreath" class="secondary">Stop</button>
+        </div>
+      </div>
+      <div class="exercise">
+        <h3>Memory match <span class="pill">Cognition</span></h3>
+        <div class="flex muted" style="margin-bottom:6px">
+          <span>Matches: <strong id="memMatches">0</strong></span>
+          <span>Moves: <strong id="memMoves">0</strong></span>
+        </div>
+        <div id="memory"></div>
+        <div class="flex" style="margin-top:10px">
+          <button id="resetMem">Reset</button>
+          <span class="muted" id="memMsg"></span>
+        </div>
+      </div>
+    </div>
+    <div class="motivation" style="margin-top:14px">
+      <div id="motivationText">Small steps count. Today’s effort is tomorrow’s strength.</div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="flex">
+    <span class="muted">© 2025 NeuroVox — Designed for recovery and support</span>
+    <span class="muted">Dark mode • Smooth animations • Accessible</span>
+  </div>
+</footer>
+
+<script>
+/* ---------- Storage helpers ---------- */
+const store = {
+  get: (k, def) => { try{ const v = JSON.parse(localStorage.getItem(k)); return v ?? def } catch { return def } },
+  set: (k, v) => localStorage.setItem(k, JSON.stringify(v))
+};
+
+/* ---------- Motivational rotation ---------- */
+const MOTIVATIONS = [
+  "Small steps count. Today’s effort is tomorrow’s strength.",
+  "Breathe. Reset. You are doing better than you think.",
+  "Recovery isn’t linear. We celebrate consistency, not perfection.",
+  "Your brain learns from gentle repetition. Let’s keep it kind.",
+  "You showed up. That matters more than anything."
+];
+(function cycleMotivation(){
+  const el = document.getElementById('motivationText');
+  let i = 0;
+  setInterval(()=>{ i=(i+1)%MOTIVATIONS.length; el.textContent = MOTIVATIONS[i]; }, 8000);
+})();
+
+/* ---------- Simple sparkline/line chart ---------- */
+const chartEl = document.getElementById('lineChart');
+const ctx = chartEl.getContext('2d');
+let series = store.get('nv_series', []);
+if(series.length === 0){ series = Array.from({length:10},(_,i)=> 50 + Math.round(Math.sin(i/2)*15)+ Math.round(Math.random()*8)); store.set('nv_series', series) }
+function drawChart(){
+  const w = chartEl.clientWidth, h = chartEl.clientHeight;
+  chartEl.width = w*2; chartEl.height = h*2; ctx.scale(2,2);
+  ctx.clearRect(0,0,w,h);
+  // grid
+  ctx.strokeStyle = '#1c2543'; ctx.lineWidth = 1;
+  for(let y=0;y<=4;y++){ const yy = h - (y*h/4); ctx.beginPath(); ctx.moveTo(0,yy); ctx.lineTo(w,yy); ctx.stroke(); }
+  // line
+  const max = 100, min = 0;
+  ctx.beginPath(); ctx.lineWidth = 2; ctx.strokeStyle = '#00e0ff';
+  series.forEach((v,i)=>{
+    const x = (i/(series.length-1))*w;
+    const y = h - ((v-min)/(max-min))*h;
+    i===0 ? ctx.moveTo(x,y): ctx.lineTo(x,y);
+  });
+  ctx.stroke();
+  // fill
+  const grad = ctx.createLinearGradient(0,0,0,h);
+  grad.addColorStop(0, 'rgba(0,224,255,.25)'); grad.addColorStop(1, 'rgba(0,224,255,0)');
+  ctx.lineTo(w,h); ctx.lineTo(0,h); ctx.closePath(); ctx.fillStyle = grad; ctx.fill();
+}
+drawChart();
+
+/* ---------- KPI, streak, goals ---------- */
+const todayKey = 'nv_last_open';
+const lastOpen = store.get(todayKey, null);
+const today = new Date().toDateString();
+let streak = store.get('nv_streak', 0);
+if(lastOpen && new Date(lastOpen).toDateString() !== today){
+  const diff = (new Date(today) - new Date(lastOpen)) / (1000*60*60*24);
+  if(diff <= 2){ streak = streak + 1 } else { streak = 1 }
+} else if(!lastOpen){ streak = 1 }
+store.set('nv_streak', streak); store.set(todayKey, new Date().toString());
+document.getElementById('kpiStreak').textContent = `${streak} day${streak>1?'s':''}`;
+
+let goalCount = store.get('nv_goal', 0);
+const goalProgress = document.getElementById('goalProgress');
+const goalCountEl = document.getElementById('goalCount');
+function setGoal(v){ goalCount = Math.min(3, Math.max(0, v)); store.set('nv_goal', goalCount); goalProgress.value = goalCount; goalCountEl.textContent = `${goalCount}/3`; }
+setGoal(goalCount);
+
+/* ---------- Avatar speech & emotion ---------- */
+const mouth = document.getElementById('mouth');
+const botLine = document.getElementById('botLine');
+const moodTag = document.getElementById('moodTag');
+
+function speak(text, {rate=1, pitch=1.05, lang='en-US'} = {}){
+  const u = new SpeechSynthesisUtterance(text);
+  u.rate = rate; u.pitch = pitch; u.lang = lang;
+  // basic lip-sync
+  u.onstart = ()=> mouth.classList.add('speaking');
+  u.onend = ()=> mouth.classList.remove('speaking');
+  u.onboundary = (e)=> { if(e.name === 'word'){ mouth.classList.toggle('speaking') } };
+  speechSynthesis.cancel(); speechSynthesis.speak(u);
+  currentUtterance = u;
+}
+
+let currentUtterance = null;
+document.getElementById('btnStopTalking').addEventListener('click', () => {
+  if(currentUtterance){
+    speechSynthesis.cancel();
+    mouth.classList.remove('speaking');
+    currentUtterance = null;
+    botLine.textContent = '';
+  }
+  document.getElementById('avatar').style.animation = 'none';
+});
+
+document.getElementById('btnSpeak').addEventListener('click', ()=>{
+  let lang = 'en-US';
+  if(document.getElementById('btnEnglish').classList.contains('active')) lang = 'en-US';
+  else if(document.getElementById('btnHindi').classList.contains('active')) lang = 'hi-IN';
+  const lines = {
+    'en-US': [
+      "Hello. I’m right here with you. Shall we take a gentle breath together?",
+      "Your effort is visible. One focused minute at a time is enough.",
+      "Tell me how today feels. I’m listening."
+    ],
+    'hi-IN': [
+      "नमस्ते। मैं यहाँ आपके साथ हूँ। क्या हम साथ में एक धीमी साँस लें?",
+      "आपका प्रयास दिख रहा है। एक बार में एक मिनट ध्यान केंद्रित करना काफी है।",
+      "मुझे बताएं कि आज कैसा लग रहा है। मैं सुन रहा हूँ।"
+    ]
+  };
+  const textArr = lines[lang] || lines['en-US'];
+  const text = textArr[Math.floor(Math.random()*textArr.length)];
+  botLine.textContent = text; speak(text, {lang});
+});
+
+document.getElementById('btnEncourage').addEventListener('click', ()=>{
+  let lang = 'en-US';
+  if(document.getElementById('btnEnglish').classList.contains('active')) lang = 'en-US';
+  else if(document.getElementById('btnHindi').classList.contains('active')) lang = 'hi-IN';
+  const texts = {
+    'en-US': "I notice your consistency. That’s powerful. Let’s log a thought and do one calming breath.",
+    'hi-IN': "मैं आपकी निरंतरता को देख रहा हूँ। यह शक्तिशाली है। आइए एक विचार दर्ज करें और एक शांत साँस लें।"
+  };
+  const text = texts[lang] || texts['en-US'];
+  botLine.textContent = text; speak(text, {rate:0.95, pitch:1, lang});
+});
+
+/* ---------- Mind log with sentiment & KPIs ---------- */
+const logInput = document.getElementById('logInput');
+const logList = document.getElementById('logList');
+let logs = store.get('nv_logs', []);
+function renderLogs(){
+  logList.innerHTML = '';
+  logs.slice().reverse().forEach(item=>{
+    const div = document.createElement('div'); div.className='log';
+    const top = document.createElement('div'); top.textContent = item.text;
+    const meta = document.createElement('small'); meta.textContent = new Date(item.time).toLocaleString() + ' • Mood: ' + item.mood;
+    div.appendChild(top); div.appendChild(meta);
+    logList.appendChild(div);
+  });
+}
+function quickSentiment(text){
+  const t = text.toLowerCase();
+  const pos = ["good","okay","calm","hope","better","improve","love","grateful","proud"];
+  const neg = ["bad","tired","pain","anxious","sad","worse","angry","fear","hurt","stress"];
+  let s=0; pos.forEach(w=>{ if(t.includes(w)) s++ }); neg.forEach(w=>{ if(t.includes(w)) s-- });
+  return s>0?"positive": s<0?"negative":"neutral";
+}
+renderLogs();
+
+document.getElementById('saveLog').addEventListener('click', ()=>{
+  const text = logInput.value.trim(); if(!text) return;
+  const mood = quickSentiment(text);
+  logs.push({text, mood, time: Date.now()});
+  store.set('nv_logs', logs); renderLogs(); logInput.value='';
+  // update avatar mood + kpi + chart + goal
+  moodTag.textContent = 'Mood: ' + (mood==='positive'?'uplifted': mood==='negative'?'heavy':'balanced');
+  document.getElementById('kpiMood').textContent = (mood==='positive'?'😊 Up': mood==='negative'?'😔 Down':'🙂 Stable');
+  // focus score nudge
+  let focus = Math.min(95, Math.max(40, (series.at(-1) ?? 60) + (mood==='positive'?+3: mood==='negative'?-2: +1)));
+  series.push(focus); if(series.length>20) series.shift(); store.set('nv_series', series); drawChart();
+  document.getElementById('kpiFocus').textContent = focus;
+  setGoal(goalCount+1);
+  const response =
+    mood==='negative'
+      ? "Thank you for sharing that. Let’s slow everything down with one minute of gentle breathing."
+      : mood==='positive'
+        ? "I feel that lift. Beautiful. Let’s capture this momentum with a quick focus round."
+        : "Got it. I’m with you. One steady step at a time.";
+  botLine.textContent = response; speak(response, {rate:0.95});
+});
+
+/* ---------- Breathing guidance (Box 4-4-4) ---------- */
+const orb = document.getElementById('orb');
+let breathTimer = null; let phase = 0;
+function setOrb(scale, text){
+  orb.style.transform = `scale(${scale})`;
+  const sr = document.getElementById('breathSr'); sr.textContent = text;
+}
+function startBreathing(){
+  clearInterval(breathTimer);
+  phase = 0;
+  speak("Let’s do box breathing. Inhale four, hold four, exhale four. Ready?");
+  const steps = [
+    {dur:4000, text:"Inhale... 2... 3... 4", scale:[1,1.25]},
+    {dur:4000, text:"Hold... 2... 3... 4", scale:[1.25,1.25]},
+    {dur:4000, text:"Exhale... 2... 3... 4", scale:[1.25,0.95]},
+    {dur:4000, text:"Rest...", scale:[0.95,0.95]}
+  ];
+  const tick = ()=>{
+    const s = steps[phase%steps.length];
+    let start = performance.now();
+    const animate = (t)=>{
+      const p = Math.min(1, (t-start)/s.dur);
+      const scale = s.scale[0] + (s.scale[1]-s.scale[0])*p;
+      setOrb(scale, s.text);
+      if(p<1){ requestAnimationFrame(animate) } else { phase++; speak(s.text, {rate:0.85}); }
+    };
+    requestAnimationFrame(animate);
+  };
+  tick();
+  breathTimer = setInterval(tick, 4000);
+}
+function stopBreathing(){ clearInterval(breathTimer); setOrb(1,"Breathing stopped."); }
+document.getElementById('startBreath').addEventListener('click', startBreathing);
+document.getElementById('stopBreath').addEventListener('click', stopBrereath = stopBreathing);
+document.getElementById('btnExercise').addEventListener('click', startBreathing);
+
+/* ---------- Memory game ---------- */
+const EMOJIS = ["🍎","🍋","🍇","🍉","🍓","🥑","🍒","🍊"];
+let board = []; let first=null, second=null, lock=false, matches=0, moves=0;
+const memGrid = document.getElementById('memory');
+const memMatches = document.getElementById('memMatches');
+const memMoves = document.getElementById('memMoves');
+const memMsg = document.getElementById('memMsg');
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]] } return a }
+function initBoard(){
+  matches=0; moves=0; first=second=null; lock=false; memMsg.textContent='';
+  memMatches.textContent=matches; memMoves.textContent=moves;
+  const cells = shuffle([...EMOJIS, ...EMOJIS]).slice(0,16);
+  board = cells.map((v,i)=>({id:i, v, revealed:false, matched:false}));
+  renderBoard();
+}
+function renderBoard(){
+  memGrid.innerHTML='';
+  board.forEach(cell=>{
+    const d = document.createElement('div'); d.className='card-cell' + (cell.revealed?' revealed':'') + (cell.matched?' matched':'');
+    d.setAttribute('data-id', cell.id);
+    d.textContent = (cell.revealed || cell.matched) ? cell.v : '❓';
+    d.addEventListener('click', ()=> flip(cell.id));
+    memGrid.appendChild(d);
+  });
+}
+function flip(id){
+  if(lock) return;
+  const c = board.find(x=>x.id===id);
+  if(c.matched || c.revealed) return;
+  c.revealed = true; renderBoard();
+  if(!first){ first = c; return }
+  second = c; lock = true; moves++; memMoves.textContent = moves;
+  setTimeout(()=>{
+    if(first.v === second.v){
+      first.matched = second.matched = true; matches++; memMatches.textContent = matches;
+      speak("Nice match. Keep going!", {rate:1.02, pitch:1.08});
+      if(matches === 8){ memMsg.textContent = "Great job! Brain warmed up."; setGoal(goalCount+1) }
+    } else {
+      first.revealed = second.revealed = false;
+    }
+    first = second = null; lock=false; renderBoard();
+  }, 700);
+}
+document.getElementById('resetMem').addEventListener('click', initBoard);
+initBoard();
+
+/* ---------- Bonus: quick focus timer to bump goals ---------- */
+let sessions = 0;
+function quickFocus(){
+  sessions++; setGoal(goalCount+1);
+  const last = series.at(-1) ?? 60;
+  const bumped = Math.min(100, last + 2 + Math.round(Math.random()*3));
+  series.push(bumped); if(series.length>20) series.shift(); store.set('nv_series', series); drawChart();
+  document.getElementById('kpiFocus').textContent = bumped;
+}
+
+/* ---------- Page-ready greeting ---------- */
+window.addEventListener('load', ()=>{
+  const greet = "Welcome back. Let’s make one small, kind step for your recovery.";
+  botLine.textContent = greet; setTimeout(()=> speak(greet, {rate:0.95}), 400);
+});
+document.getElementById('btnEnglish').addEventListener('click', ()=>{
+  document.getElementById('btnEnglish').classList.add('active');
+  document.getElementById('btnHindi').classList.remove('active');
+});
+document.getElementById('btnHindi').addEventListener('click', ()=>{
+  document.getElementById('btnHindi').classList.add('active');
+  document.getElementById('btnEnglish').classList.remove('active');
+});
+document.getElementById('btnHome').addEventListener('click', () => { window.location.href = 'index.html'; });
+</script>
+</body>
+</html>

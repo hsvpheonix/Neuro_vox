@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>NeuroVox Live Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --bg: #0f1115;
+      --panel: #12141b;
+      --text: #e5e7eb;
+      --muted: #a3a3b2;
+      --border: #1f2430;
+      --brand: #7c3aed;
+      --cyan: #22d3ee;
+      --good: #10b981;
+      --warn: #f59e0b;
+      --crit: #ef4444;
+    }
+    * { box-sizing: border-box }
+    html, body { height: 100% }
+    body {
+      margin: 0; background: var(--bg); color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+    }
+    .container { max-width: 1200px; margin: 0 auto; padding: 24px }
+    .header {
+      display: flex; align-items: center; gap: 16px;
+    }
+    .avatar {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: linear-gradient(135deg, #2a2e3a, #1a1e28);
+      display: grid; place-items: center; color: #cbd5e1; font-weight: 600;
+      border: 1px solid var(--border);
+    }
+    .title { display: grid }
+    .title h1 { margin: 0; font-size: 20px }
+    .title .muted { font-size: 12px; color: var(--muted) }
+    .live { margin-left: auto; display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: #c4b5fd }
+    .dot { width: 8px; height: 8px; background: var(--brand); border-radius: 50%; box-shadow: 0 0 8px var(--brand); }
+    .grid { display: grid; gap: 16px }
+    .kpis { grid-template-columns: repeat(3, 1fr); margin-top: 16px }
+    .two-col { grid-template-columns: 2fr 1fr; margin-top: 16px }
+    .panel {
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: 12px; padding: 16px;
+    }
+    .panel h3 { margin: 0 0 10px 0; font-size: 14px; color: #c7c9d1 }
+    .stat { display: grid; gap: 6px }
+    .stat .label { font-size: 12px; color: var(--muted) }
+    .stat .value { font-size: 28px; font-weight: 700 }
+    .stat .sub { font-size: 12px; color: var(--muted) }
+    .tile { transition: transform 180ms ease, border-color 180ms ease }
+    .tile:hover { transform: translateY(-2px); border-color: #2a3140 }
+    .legend { display: flex; gap: 12px; align-items: center; font-size: 12px; color: var(--muted); margin-bottom: 8px }
+    .chip { width: 10px; height: 10px; border-radius: 4px; display: inline-block }
+    .alerts { max-height: 320px; overflow: auto; scrollbar-width: thin }
+    .alert { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; align-items: center; padding: 10px; border-radius: 8px; background: #0f131d; border: 1px solid var(--border); }
+    .alert + .alert { margin-top: 8px }
+    .badge { font-size: 11px; text-transform: uppercase; letter-spacing: .03em; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--border) }
+    .b-info { color: #94a3b8; background: #0b1220 }
+    .b-warn { color: var(--warn); background: #1a1405; border-color: #3a2a08 }
+    .b-crit { color: #fecaca; background: #1a0b0b; border-color: #3a0f0f }
+    .time { font-size: 12px; color: var(--muted) }
+    .mind { display: grid; gap: 8px }
+    .row { display: grid; grid-template-columns: 60px 1fr 50px; gap: 10px; align-items: center }
+    input[type="range"] { width: 100% }
+    textarea {
+      width: 100%; min-height: 90px; resize: vertical;
+      background: #0f131d; color: var(--text); border: 1px solid var(--border);
+      border-radius: 8px; padding: 10px; font-family: inherit;
+    }
+    .btn {
+      justify-self: end; background: var(--brand); color: white; border: none;
+      padding: 10px 14px; border-radius: 10px; font-weight: 600; cursor: pointer;
+      transition: filter 180ms ease;
+    }
+    .btn:hover { filter: brightness(1.05) }
+    .statusbar { margin-top: 12px; font-size: 12px; color: var(--muted) }
+    .footnote { font-size: 11px; color: var(--muted) }
+    canvas { width: 100%; height: 320px; display: block; border-radius: 8px; background: #0b0d12; }
+  #brainActivityChart { height: 187px; width: 375px; max-width: 375px; max-height: 187px; }
+  #goToLiveDashboardBtn {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: var(--brand);
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    z-index: 1000;
+    transition: filter 180ms ease;
+  }
+  #goToLiveDashboardBtn:hover {
+    filter: brightness(1.1);
+  }
+    @media (max-width: 980px) {
+      .kpis { grid-template-columns: 1fr }
+      .two-col { grid-template-columns: 1fr }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="avatar" aria-hidden="true">NG</div>
+      <div class="title">
+        <h1>NeuroVox | Live patient dashboard</h1>
+        <span class="muted">Patient: Aarav Gupta • ID: demo</span>
+      </div>
+      <div class="live" id="liveStatus"><span class="dot"></span> Live</div>
+    </div>
+
+    <div class="grid kpis">
+      <div class="panel tile stat" aria-live="polite">
+        <div class="label">Heart rate</div>
+        <div class="value" id="kpi-hr">-- bpm</div>
+        <div class="sub">Streaming</div>
+      </div>
+      <div class="panel tile stat" aria-live="polite">
+        <div class="label">SpO₂</div>
+        <div class="value" id="kpi-spo2">-- %</div>
+        <div class="sub">Streaming</div>
+      </div>
+      <div class="panel tile stat" aria-live="polite">
+        <div class="label">Open alerts</div>
+        <div class="value" id="kpi-alerts">0</div>
+        <div class="sub">Last hour</div>
+      </div>
+    </div>
+
+    <div class="grid two-col">
+      <div class="panel">
+        <div class="legend">
+          <span class="chip" style="background: var(--brand)"></span> HR (bpm)
+          <span class="chip" style="background: var(--cyan)"></span> SpO₂ (%)
+        </div>
+        <canvas id="chart"></canvas>
+        <div class="statusbar" id="streamStatus">Connecting…</div>
+      </div>
+
+      <div class="panel">
+        <h3>Alerts</h3>
+        <div class="alerts" id="alerts"></div>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:16px">
+      <h3>Mind log</h3>
+      <div class="mind">
+        <div class="row">
+          <label for="mood">Mood</label>
+          <input id="mood" type="range" min="1" max="5" value="3" />
+          <output id="moodOut">3</output>
+        </div>
+        <div class="row">
+          <label for="energy">Energy</label>
+          <input id="energy" type="range" min="1" max="5" value="3" />
+          <output id="energyOut">3</output>
+        </div>
+        <textarea id="notes" placeholder="Anything you'd like to share?"></textarea>
+        <button class="btn" id="saveMindLog">Save</button>
+        <div class="footnote" id="mindLogHint">Your check-in helps us support you better.</div>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:16px">
+      <h3>Brain Activity Trends</h3>
+      <canvas id="brainActivityChart"></canvas>
+    </div>
+
+    <button class="btn" style="margin-top: 16px;" onclick="window.location.href='livedashboard.html'">Go to Live Dashboard</button>
+  </div>
+</body>
+
+  <script>
+    // --------------------------
+    // Config
+    // --------------------------
+    const WS_URL = null; // e.g. "ws://localhost:8000/ws/patients/demo" or leave null to use simulator
+    const MAX_POINTS = 300;
+
+    // --------------------------
+    // State
+    // --------------------------
+    const state = {
+      vitals: [],
+      alerts: [],
+      alertOpenCount: 0,
+      lastHR: null,
+      lastSpO2: null
+    };
+
+    // --------------------------
+    // Utilities
+    // --------------------------
+    const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
+    function fmtTime(ts) {
+      const d = new Date(ts);
+      return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    }
+
+    // --------------------------
+    // DOM refs
+    // --------------------------
+    const kpiHR = document.getElementById('kpi-hr');
+    const kpiSpO2 = document.getElementById('kpi-spo2');
+    const kpiAlerts = document.getElementById('kpi-alerts');
+    const alertsEl = document.getElementById('alerts');
+    const liveStatus = document.getElementById('liveStatus');
+    const streamStatus = document.getElementById('streamStatus');
+
+    // --------------------------
+    // Chart (vanilla Canvas)
+    // --------------------------
+    const canvas = document.getElementById('chart');
+    const ctx = canvas.getContext('2d');
+    let dpi = window.devicePixelRatio || 1;
+
+    function resizeCanvas() {
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = Math.floor(rect.width * dpi);
+      canvas.height = Math.floor(rect.height * dpi);
+      drawChart();
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function drawSeries(points, color, yMin, yMax) {
+      if (points.length < 2) return;
+      const pad = 16 * dpi;
+      const W = canvas.width - pad * 2;
+      const H = canvas.height - pad * 2;
+      const n = points.length;
+      const tMin = new Date(points[0].ts).getTime();
+      const tMax = new Date(points[n - 1].ts).getTime() || (tMin + 1);
+
+      ctx.lineWidth = 2 * dpi;
+      ctx.strokeStyle = color;
+      ctx.beginPath();
+      for (let i = 0; i < n; i++) {
+        const t = new Date(points[i].ts).getTime();
+        const x = pad + (W * (t - tMin)) / (tMax - tMin || 1);
+        const yVal = points[i].val;
+        const y = pad + H - ((yVal - yMin) / (yMax - yMin)) * H;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+      // Fade trail overlay
+      const grd = ctx.createLinearGradient(0, pad, 0, pad + H);
+      grd.addColorStop(0, color + '22');
+      grd.addColorStop(1, 'transparent');
+      ctx.fillStyle = grd;
+      ctx.fillRect(pad, pad, W, H);
+    }
+
+    function drawAxes() {
+      const pad = 16 * dpi;
+      ctx.strokeStyle = '#232633';
+      ctx.lineWidth = 1 * dpi;
+      ctx.beginPath();
+      ctx.moveTo(pad, canvas.height - pad);
+      ctx.lineTo(canvas.width - pad, canvas.height - pad);
+      ctx.moveTo(pad, pad);
+      ctx.lineTo(pad, canvas.height - pad);
+      ctx.stroke();
+    }
+
+    function drawChart() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawAxes();
+      const hrSeries = state.vitals.map(v => ({ ts: v.ts, val: v.hr }));
+      const spSeries = state.vitals.map(v => ({ ts: v.ts, val: v.spo2 }));
+      if (hrSeries.length) drawSeries(hrSeries, '#7c3aed', 50, 120);
+      if (spSeries.length) drawSeries(spSeries, '#22d3ee', 90, 100);
+    }
+
+    // --------------------------
+    // UI update
+    // --------------------------
+    function renderKPIs() {
+      const last = state.vitals[state.vitals.length - 1] || {};
+      if (last.hr != null) kpiHR.textContent = `${last.hr} bpm`;
+      if (last.spo2 != null) kpiSpO2.textContent = `${last.spo2} %`;
+      kpiAlerts.textContent = String(state.alertOpenCount);
+    }
+
+    function renderAlerts() {
+      alertsEl.innerHTML = '';
+      if (!state.alerts.length) {
+        const p = document.createElement('div');
+        p.className = 'footnote';
+        p.textContent = 'No alerts in the last hour.';
+        alertsEl.appendChild(p);
+        return;
+      }
+      state.alerts.forEach(a => {
+        const row = document.createElement('div');
+        row.className = 'alert';
+        const badge = document.createElement('span');
+        badge.className = 'badge ' + (a.severity === 'crit' ? 'b-crit' : a.severity === 'warn' ? 'b-warn' : 'b-info');
+        badge.textContent = a.severity;
+        const msg = document.createElement('div');
+        msg.textContent = a.message;
+        const time = document.createElement('div');
+        time.className = 'time';
+        time.textContent = fmtTime(a.ts);
+        row.appendChild(badge);
+        row.appendChild(msg);
+        row.appendChild(time);
+        alertsEl.prepend(row);
+      });
+    }
+
+    // --------------------------
+    // Stream handling (WS + simulator)
+    // --------------------------
+    let ws;
+    let simulatorInterval;
+    let alertInterval;
+
+    function setConnectionUI(ok, note) {
+      streamStatus.textContent = note || (ok ? 'Live stream connected' : 'Using simulator');
+      liveStatus.style.opacity = ok ? '1' : '0.7';
+    }
+
+    function connectWebSocket() {
+      if (!WS_URL) {
+        startSimulator();
+        return;
+      }
+      try {
+        ws = new WebSocket(WS_URL);
+        ws.onopen = () => setConnectionUI(true, 'Live stream connected');
+        ws.onmessage = (ev) => {
+          // Expect payload like {type:"vitals.tick", data:{ts, hr, spo2}} or {type:"event.new", data:{ts,severity,message}}
+          const { type, data } = JSON.parse(ev.data);
+          if (type === 'vitals.tick') handleVitals(data);
+          else if (type === 'event.new') handleAlert(data);
+          scheduleRender();
+        };
+        ws.onclose = () => {
+          setConnectionUI(false, 'Stream unavailable — switching to simulator');
+          startSimulator();
+        };
+        ws.onerror = () => {
+          setConnectionUI(false, 'Stream error — switching to simulator');
+          try { ws.close(); } catch {}
+          startSimulator();
+        };
+      } catch {
+        setConnectionUI(false, 'Cannot connect — using simulator');
+        startSimulator();
+      }
+    }
+
+    function handleVitals(v) {
+      state.vitals.push(v);
+      if (state.vitals.length > MAX_POINTS) state.vitals.shift();
+      state.lastHR = v.hr;
+      state.lastSpO2 = v.spo2;
+    }
+
+    function handleAlert(a) {
+      state.alerts.push(a);
+      state.alertOpenCount = state.alerts.filter(x => !x.acknowledged).length;
+      if (state.alerts.length > 50) state.alerts.shift();
+    }
+
+    function startSimulator() {
+      clearInterval(simulatorInterval);
+      clearInterval(alertInterval);
+      setConnectionUI(false);
+      let hr = 78, spo2 = 98, t = Date.now();
+      simulatorInterval = setInterval(() => {
+        // Gentle random walk with bounds
+        hr = clamp(Math.round(hr + (Math.random() - 0.5) * 3), 68, 96);
+        spo2 = clamp(Math.round(spo2 + (Math.random() - 0.5) * 0.8), 96, 100);
+        t += 1200;
+        handleVitals({ ts: new Date(t).toISOString(), hr, spo2 });
+        scheduleRender();
+      }, 1200);
+
+      alertInterval = setInterval(() => {
+        const pick = Math.random();
+        if (pick < 0.15) {
+          const severity = pick < 0.03 ? 'crit' : pick < 0.08 ? 'warn' : 'info';
+          const message =
+            severity === 'crit' ? 'EEG anomaly detected — review now' :
+            severity === 'warn' ? 'HR trending higher than baseline' :
+            'All stable — keep going';
+          handleAlert({ ts: new Date().toISOString(), severity, message, acknowledged: false });
+          renderAlerts();
+          renderKPIs();
+        }
+      }, 6000);
+    }
+
+    // --------------------------
+    // Render loop (debounced)
+    // --------------------------
+    let rafId = null;
+    function scheduleRender() {
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        rafId = null;
+        drawChart();
+        renderKPIs();
+      });
+    }
+
+    // --------------------------
+    // Mind log
+    // --------------------------
+    const mood = document.getElementById('mood');
+    const energy = document.getElementById('energy');
+    const moodOut = document.getElementById('moodOut');
+    const energyOut = document.getElementById('energyOut');
+    const notes = document.getElementById('notes');
+    const saveMindLog = document.getElementById('saveMindLog');
+    const mindLogHint = document.getElementById('mindLogHint');
+
+    mood.addEventListener('input', () => moodOut.textContent = mood.value);
+    energy.addEventListener('input', () => energyOut.textContent = energy.value);
+
+    saveMindLog.addEventListener('click', async () => {
+      const payload = {
+        ts: new Date().toISOString(),
+        mood: Number(mood.value),
+        energy: Number(energy.value),
+        notes: notes.value.trim()
+      };
+      // Wire this to your API if available:
+      // await fetch('/patients/demo/mind-log', { method: 'POST', headers: { 'Content-Type':'application/json' }, body: JSON.stringify(payload) });
+      notes.value = '';
+      mindLogHint.textContent = 'Saved. Thank you for sharing.';
+      setTimeout(() => mindLogHint.textContent = 'Your check-in helps us support you better.', 2500);
+    });
+
+    // --------------------------
+    // Boot
+    // --------------------------
+    connectWebSocket();
+
+    // --------------------------
+    // Brain Activity Chart
+    // --------------------------
+    const brainCtx = document.getElementById('brainActivityChart').getContext('2d');
+
+    const brainData = {
+      labels: ['9 AM', '10 AM', '11 AM', '12 PM', '1 PM', '2 PM', '3 PM'],
+      datasets: [
+        {
+          label: 'Focus',
+          data: [0.8, 0.6, 0.5, 0.3, 0.7, 0.7, 0.9],
+          backgroundColor: 'rgba(135, 206, 250, 0.8)',
+          borderColor: 'rgba(135, 206, 250, 1)',
+          borderWidth: 1
+        },
+        {
+          label: 'Relaxation',
+          data: [0.4, 0.5, 0.6, 0.6, 0.5, 0.5, 0.2],
+          backgroundColor: 'rgba(173, 216, 230, 0.8)',
+          borderColor: 'rgba(173, 216, 230, 1)',
+          borderWidth: 1
+        },
+        {
+          label: 'Stress',
+          data: [0.2, 0.3, 0.4, 0.6, 0.7, 0.3, 0.1],
+          backgroundColor: 'rgba(178, 34, 34, 0.8)',
+          borderColor: 'rgba(178, 34, 34, 1)',
+          borderWidth: 1
+        }
+      ]
+    };
+
+    const brainOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: false,
+      layout: {
+        padding: {
+          top: 20,
+          bottom: 20,
+          left: 20,
+          right: 20
+        }
+      },
+      scales: {
+        x: {
+          max: 6,
+          min: 0,
+          ticks: {
+            stepSize: 1,
+            callback: function(value, index) {
+              return brainData.labels[index] || '';
+            }
+          },
+          grid: {
+            display: false
+          }
+        },
+        y: {
+          beginAtZero: true,
+          max: 1,
+          ticks: {
+            callback: function (value) {
+              return (value * 100) + '%';
+            }
+          },
+          title: {
+            display: true,
+            text: 'Percentage'
+          }
+        }
+      },
+      plugins: {
+        tooltip: {
+          callbacks: {
+            label: function (context) {
+              return context.dataset.label + ': ' + context.parsed.y;
+            }
+          }
+        },
+        legend: {
+          position: 'top',
+          labels: {
+            color: 'white'
+          }
+        }
+      }
+    };
+    
+    const brainActivityChart = new Chart(brainCtx, {
+      type: 'bar',
+      data: brainData,
+      options: brainOptions
+    });
+  </script>
+</body>
+</html>

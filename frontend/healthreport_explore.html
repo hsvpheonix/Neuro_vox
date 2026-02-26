@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Health Report - Neurovox</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            background-color: #121212;
+            color: white;
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+            display: flex;
+            gap: 20px;
+        }
+        .sidebar {
+            width: 220px;
+            background-color: #1e1e1e;
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .sidebar h2 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        .sidebar a {
+            color: #bbb;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            display: block;
+            transition: background-color 0.3s;
+        }
+        .sidebar a.active, .sidebar a:hover {
+            background-color: #0072ff;
+            color: white;
+        }
+        .profile {
+            margin-top: auto;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #bbb;
+        }
+        .profile img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+        .main-content {
+            flex-grow: 1;
+            background-color: #1e1e1e;
+            border-radius: 10px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        .share-btn {
+            background-color: #0072ff;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            border: none;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+        .share-btn:hover {
+            background-color: #005bb5;
+        }
+        .section {
+            background-color: #292929;
+            border-radius: 10px;
+            padding: 20px;
+        }
+        .section h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        .brain-activity {
+            display: flex;
+            gap: 20px;
+        }
+        .brain-activity .index {
+            flex: 1;
+            font-size: 3rem;
+            font-weight: bold;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            color: #00c6ff;
+        }
+        .brain-activity .chart {
+            flex: 3;
+            background-color: #121212;
+            border-radius: 10px;
+            padding: 15px;
+        }
+        .brain-activity .chart canvas {
+            width: 100%;
+            height: 150px;
+        }
+        .vitals {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .vital-card {
+            background-color: #121212;
+            flex: 1;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .vital-card h3 {
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        .vital-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #00c6ff;
+        }
+        .historical-notes {
+            margin-top: 20px;
+        }
+        .note {
+            background-color: #121212;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        .note-icon {
+            font-size: 1.5rem;
+            color: #00c6ff;
+        }
+        .note-content {
+            flex-grow: 1;
+        }
+        .note-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        .note-date {
+            font-size: 0.85rem;
+            color: #888;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            color: white;
+        }
+        th, td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #333;
+            text-align: left;
+        }
+        th {
+            background-color: #292929;
+        }
+        td.status-normal {
+            color: #00ff00;
+            font-weight: 600;
+        }
+        td.status-elevated {
+            color: #ffcc00;
+            font-weight: 600;
+        }
+        td.status-critical {
+            color: #ff3300;
+            font-weight: 600;
+        }
+        .glow {
+            box-shadow: 0 0 20px #00c6ff;
+            transition: box-shadow 0.3s ease;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <h2>NeuroVox</h2>
+            <a href="index.html">Home</a>
+            <a href="healthreport_explore.html" class="active">Health Report</a>
+                <div class="profile">
+                    <img src="SHWETA3.png" alt="User Avatar" />
+                    <div>
+                        <div>Ravi Kumar</div>
+                        <div style="font-size: 0.8rem; color: #666;">Patient ID: 7390-2</div>
+                    </div>
+                </div>
+        </nav>
+        <main class="main-content">
+            <div class="header">
+            <h1>Health Report</h1>
+            <a href="healthreport_share_report.html" class="share-btn">Share Report</a>
+        </div>
+
+        <section class="section doctor-summary">
+            <h2>Doctor's Summary</h2>
+            <p>Key observations and recommendations.</p>
+            <div style="background-color: #121212; padding: 15px; border-radius: 10px; margin-top: 10px; font-size: 0.9rem; line-height: 1.4;">
+                Patient shows a 5% improvement in the Brain Activity Index over the last 30 days, indicating a positive response to the current therapy regimen. Vitals remain stable. Nerve activity in the Broca’s area shows increased coherence. Recommend continuing with the current treatment plan and monitoring nerve activity closely. Next follow-up in 4 weeks.
+            </div>
+        </section>
+
+            <section class="section brain-activity">
+                <h2>Neural Activity Trends</h2>
+                <div class="brain-activity">
+                    <div class="index">
+                        <div>Brain Activity Index</div>
+                        <div style="font-size: 3rem; font-weight: bold;">85</div>
+                        <div style="font-size: 0.9rem; color: #0f0;">Last 30 Days +5%</div>
+                    </div>
+                    <div class="chart">
+                        <canvas id="brainChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section detailed-nerve-activity">
+                <h2>Detailed Nerve Activity</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nerve Cluster</th>
+                            <th>Location</th>
+                            <th>Activity Level (μV)</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Cranial Nerve VII</td>
+                            <td>Facial</td>
+                            <td>45.2</td>
+                            <td class="status-normal">Normal</td>
+                        </tr>
+                        <tr>
+                            <td>Cranial Nerve IX</td>
+                            <td>Glossopharyngeal</td>
+                            <td>33.8</td>
+                            <td class="status-normal">Normal</td>
+                        </tr>
+                        <tr>
+                            <td>Cranial Nerve X</td>
+                            <td>Vagus</td>
+                            <td>51.5</td>
+                            <td class="status-elevated">Elevated</td>
+                        </tr>
+                        <tr>
+                            <td>Cranial Nerve XI</td>
+                            <td>Accessory</td>
+                            <td>60.1</td>
+                            <td class="status-critical">Critical</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section vitals">
+                <h2>Vital Signs</h2>
+                <div class="vitals">
+                    <div class="vital-card">
+                        <h3>Heart Rate</h3>
+                        <div class="vital-value">72 bpm</div>
+                    </div>
+                    <div class="vital-card">
+                        <h3>Blood Pressure</h3>
+                        <div class="vital-value">120/80 mmHg</div>
+                    </div>
+                    <div class="vital-card">
+                        <h3>Oxygen Saturation</h3>
+                        <div class="vital-value">98%</div>
+                    </div>
+                    <div class="vital-card">
+                        <h3>Body Temperature</h3>
+                        <div class="vital-value">37.0°C</div>
+                    </div>
+                    <div class="vital-card">
+                        <h3>Respiration Rate</h3>
+                        <div class="vital-value">16 breaths/min</div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section historical-notes">
+                <h2>Historical Notes</h2>
+                <div class="note">
+                    <div class="note-icon">💊</div>
+                    <div class="note-content">
+                        <div class="note-title">Medication Adjustment</div>
+                        <div class="note-date">Dosage adjusted based on BAI. 2 days ago</div>
+                    </div>
+                </div>
+                <div class="note">
+                    <div class="note-icon">🧑‍⚕️</div>
+                    <div class="note-content">
+                        <div class="note-title">Therapy Session</div>
+                        <div class="note-date">Successful communication exercises. 5 days ago</div>
+                    </div>
+                </div>
+                <div class="note">
+                    <div class="note-icon">📈</div>
+                    <div class="note-content">
+                        <div class="note-title">Symptom Improvement</div>
+                        <div class="note-date">Noted improvement this week. 1 week ago</div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('brainChart').getContext('2d');
+        const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, 'rgba(0, 198, 255, 0.6)');
+        gradient.addColorStop(1, 'rgba(0, 198, 255, 0.1)');
+
+        const brainChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Day 1', 'Day 5', 'Day 10', 'Day 15', 'Day 20', 'Day 25', 'Day 30'],
+                datasets: [{
+                    label: 'Brain Activity Index',
+                    data: [70, 75, 80, 78, 85, 90, 85],
+                    borderColor: '#00c6ff',
+                    backgroundColor: gradient,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 5,
+                    pointHoverRadius: 8,
+                    pointBackgroundColor: '#00c6ff',
+                    pointHoverBackgroundColor: '#0072ff',
+                    borderWidth: 3,
+                }]
+            },
+            options: {
+                responsive: true,
+                animation: {
+                    duration: 2000,
+                    easing: 'easeInOutQuad'
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        min: 60,
+                        max: 100,
+                        ticks: {
+                            color: 'white',
+                            font: {
+                                size: 12
+                            }
+                        },
+                        grid: {
+                            color: '#333'
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            color: 'white',
+                            font: {
+                                size: 12
+                            }
+                        },
+                        grid: {
+                            color: '#333'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: 'white',
+                            font: {
+                                size: 14
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: '#1e1e1e',
+                        titleColor: '#00c6ff',
+                        bodyColor: 'white',
+                        borderColor: '#00c6ff',
+                        borderWidth: 1,
+                        cornerRadius: 8,
+                        displayColors: false
+                    }
+                }
+            }
+        });
+
+        // Add glow effect on click for all boxes
+        const boxes = document.querySelectorAll('.section, .vital-card, .note, .sidebar a, .share-btn');
+        boxes.forEach(box => {
+            box.addEventListener('click', () => {
+                box.classList.toggle('glow');
+            });
+        });
+
+        // Modal open/close logic
+        const openModalBtn = document.getElementById('openShareReportModal');
+        const closeModalBtn = document.getElementById('closeShareReportModal');
+        const modal = document.getElementById('shareReportModal');
+
+        openModalBtn.addEventListener('click', () => {
+            modal.classList.remove('hidden');
+        });
+
+        closeModalBtn.addEventListener('click', () => {
+            modal.classList.add('hidden');
+        });
+
+        // Show/hide steps in modal
+        function showStep(stepId) {
+            document.querySelectorAll('#shareReportModal .step').forEach(s => s.style.display = 'none');
+            const step = document.getElementById(stepId);
+            if (step) step.style.display = 'block';
+        }
+
+        // Role select change in modal
+        const roleSelect = document.querySelector('#shareReportModal #role');
+        const doctorFields = document.querySelector('#shareReportModal #doctorFields');
+        const patientFields = document.querySelector('#shareReportModal #patientFields');
+
+        if (roleSelect) {
+            roleSelect.addEventListener('change', () => {
+                if (doctorFields && patientFields) {
+                    doctorFields.style.display = roleSelect.value === 'doctor' ? 'block' : 'none';
+                    patientFields.style.display = roleSelect.value === 'patient' ? 'block' : 'none';
+                }
+            });
+        }
+
+        // Modal form event listeners
+        const loginForm = document.querySelector('#shareReportModal #loginForm');
+        if (loginForm) {
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const email = document.getElementById("loginEmail").value.trim().toLowerCase();
+                const password = document.getElementById("loginPassword").value;
+                const userData = JSON.parse(localStorage.getItem("user_" + email));
+                if (userData && userData.password === password) {
+                    window.location.href = 'index.html?login=success';
+                } else {
+                    alert("Invalid email or password!");
+                }
+            });
+        }
+
+        const signupForm = document.querySelector('#shareReportModal #signupForm');
+        if (signupForm) {
+            signupForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const roleSelect = document.getElementById("role");
+                const userRole = roleSelect.value;
+                const userEmail = document.getElementById("email").value.trim().toLowerCase();
+                const fullName = document.getElementById("name").value.trim();
+                const password = document.getElementById("password").value;
+
+                if(localStorage.getItem("user_" + userEmail)){
+                    alert("User already exists! Please login.");
+                    return;
+                }
+
+                let extra = {};
+                if(userRole==="doctor"){
+                    extra = {
+                        specialization: document.getElementById("specialization").value,
+                        license: document.getElementById("license").value,
+                        hospital: document.getElementById("hospital").value
+                    };
+                    showStep("doctorVerificationStep");
+                } else {
+                    extra = {
+                        age: document.getElementById("age").value,
+                        gender: document.getElementById("gender").value,
+                        condition: document.getElementById("condition").value
+                    };
+                    showStep("patientDetailsStep");
+                }
+
+                localStorage.setItem("temp_user", JSON.stringify({
+                    role: userRole,
+                    name: fullName,
+                    email: userEmail,
+                    password,
+                    ...extra
+                }));
+            });
+        }
+
+        const patientDetailsForm = document.querySelector('#shareReportModal #patientDetailsForm');
+        if (patientDetailsForm) {
+            patientDetailsForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const temp = JSON.parse(localStorage.getItem("temp_user"));
+                const data = {
+                    paralysisType: document.getElementById("paralysisType").value,
+                    previousHistory: document.getElementById("previousHistory").value,
+                    currentMedications: document.getElementById("currentMedications").value,
+                    allergies: document.getElementById("allergies").value,
+                    emergencyContact: document.getElementById("emergencyContact").value
+                };
+                temp.medicalDetails = data;
+                finalizeUser(temp);
+            });
+        }
+
+        const doctorVerificationForm = document.querySelector('#shareReportModal #doctorVerificationForm');
+        if (doctorVerificationForm) {
+            doctorVerificationForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const temp = JSON.parse(localStorage.getItem("temp_user"));
+                const file = document.getElementById("verificationDoc").files[0];
+                const reader = new FileReader();
+                reader.onload = function(){
+                    temp.verificationDetails = {
+                        degree: document.getElementById("degree").value,
+                        yearsExperience: document.getElementById("yearsExperience").value,
+                        contactNumber: document.getElementById("contactNumber").value,
+                        documentName: file.name,
+                        documentData: reader.result
+                    };
+                    localStorage.setItem("user_" + temp.email, JSON.stringify(temp));
+                    localStorage.removeItem("temp_user");
+                    showStep("verificationSuccessStep");
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function finalizeUser(userData){
+            const userEmail = userData.email;
+            const userId = "USR-" + Date.now();
+            const username = userData.name.split(" ")[0].toLowerCase() + Math.floor(Math.random()*1000);
+
+            userData.userId = userId;
+            userData.username = username;
+
+            localStorage.setItem("user_" + userEmail, JSON.stringify(userData));
+            localStorage.removeItem("temp_user");
+
+            window.location.href = 'index.html?login=success';
+        }
+    </script>
+</body>
+</html>
+</edit_file>
